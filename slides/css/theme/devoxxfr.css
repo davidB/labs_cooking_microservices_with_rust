@@ -348,7 +348,7 @@ html.rightbanner body {
 
 /* intro slides */
 html.intro .slides {
-  background-image: url("../../background_1280_720_HD.png"); }
+  background-image: url("../../images/background_1280_720_HD.png"); }
 
 html.intro .reveal .slides section h1, html.intro .reveal .slides section h2 {
   text-align: center;
@@ -364,7 +364,7 @@ html.intro .reveal .slides section p {
   margin-left: 2%; }
 
 html.intro .footer {
-//  z-index: 100;
+  z-index: 100;
   background-image: none;
   background-color: #03002e; }
 
