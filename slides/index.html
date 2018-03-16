@@ -1,50 +1,156 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<!--link rel="stylesheet" href="css/theme/black.css"-->
-		<link rel="stylesheet" href="css/theme/devoxxfr.css">
+	<title>reveal.js</title>
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<!--link rel="stylesheet" href="css/theme/black.css"-->
+	<link rel="stylesheet" href="css/theme/devoxxfr.css">
+	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js" integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
+	 crossorigin="anonymous"></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/brands.js" integrity="sha384-sCI3dTBIJuqT6AwL++zH7qL8ZdKaHpxU43dDt9SyOzimtQ9eyRhkG3B7KMl6AO19"
+	 crossorigin="anonymous"></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
+	 crossorigin="anonymous"></script>
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section id="intro">
+				<section data-state="intro">
+					<h1>Cuisiner un micro-service avec Rust
+						<br>
+						<img src="images/rust.svg" style="background:none;box-shadow:none;" />
+					</h1>
+					<p>
+						David Bernard
+						<a href="https://github.com/davidB">
+							<i class="fab fa-github"></i> davidB</a>
+						<br /> François Mockers
+						<a href="https://github.com/mockersf">
+							<i class="fab fa-github"></i> mockersf</a>
+					</p>
+
+				</section>
+				<section>
+					<blockquote>
+						Petite recette pour réaliser un micro-service codé en Rust de zéro au déploiement. Afin de découvrir Rust au travers de son
+						écosysteme, ainsi que l'intégration dans une "infrastructure micro-services".
+						<br/> Car un langage n'est pas une qu'une syntaxe et un compilateur, mais aussi ce qu'il y a autour: outils, documentation,
+						communauté, ...
+					</blockquote>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Ingrédients</h1>
+					<aside class="notes">le langage, les docs en ligne (et package hors ligne)</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Ustensiles</h1>
+					<aside class="notes">l'outil de build, structure de projets, le repository des dépendances, formatage du code, documentation std, tests unitaires,
+						exemples, benchs, editeur (rls/vscode/intellij) ...</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Péparation</h1>
+					<aside class="notes">assemblage de libs et de code pour faire un service avec une api web (http + graphql)</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Cuisson</h1>
+					<aside class="notes">la sécurité, healthcheck/heartbeat, metrics, logs, traces, ... dashboard</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Dressage</h1>
+					<aside class="notes">"containerisation" & déploiement (avec un frontal web, mini test de charge avec wrk, ...)</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Dégustation</h1>
+					<aside class="notes">est-ce mangeable? quels sont les saveurs, sucré, salé, épicé, amer ?</aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Merci / Thanks you</h1>
+				</section>
+			</section>
 		</div>
+		<div class="footer">
+			<p>#DevoxxFR</p>
+			<img align="right" src="images/logos Devoxx France/logo-texte-devoxx-france-400.png" />
+		</div>
+	</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			history: true,
+			center: false,
+			controls: false,
+			progress: true,
+			width: 1280,
+			height: 720,
+			slideNumber: true,
+			margin: 0.0,
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
 </html>
