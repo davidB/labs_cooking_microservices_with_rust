@@ -18,7 +18,7 @@
 	 crossorigin="anonymous"></script>
 	<!-- Theme used for syntax highlighting of code -->
 	<link rel="stylesheet" href="lib/css/zenburn.css">
-
+	<link rel="stylesheet" type="text/css" href="css/asciinema-player.css" />
 	<!-- Printing and PDF exports -->
 	<script>
 		var link = document.createElement('link');
@@ -107,6 +107,9 @@
 					<h2>cargo</h2>
 					TODO
 				</section>
+				<section>
+					<asciinema-player src="cast/test.cast" font-size="medium" speed="2" loop="true"></asciinema-player>
+				</section>
 				<section class="questions" data-state="flash" align="center">
 					<i class="fas fa-question fa-10x"></i>
 				</section>
@@ -161,6 +164,7 @@
 
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
+	<script src="js/asciinema-player.js"></script>
 
 	<script>
 		// More info about config & dependencies:
