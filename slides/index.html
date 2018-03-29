@@ -195,6 +195,32 @@
 					<h1>Cuisson</h1>
 					<aside class="notes">la sécurité, healthcheck/heartbeat, metrics, logs, traces, ... dashboard</aside>
 				</section>
+				<section>
+					<h2>Logs</h2>
+					TODO code (startup/shutdown)
+					TODO endpoint log
+					TODO metrics capture
+				</section>
+				<section>
+					<h2>(Custom) Metrics</h2>
+					TODO code (prometheus ou telegraph ?) + config (k8s)
+					blackbox (vs whitebox)
+					app or business metrics or ...
+					but not system resources, or request
+					SLI (not SLO)
+				</section>
+				<section>
+					<h2>Tracing</h2>
+					TODO
+				</section>
+				<section>
+					<h2>HealthCheck/Liveness</h2>
+					TODO code (version + now) + config (k8s)
+				</section>
+				<section>
+					<h2>Readiness</h2>
+					TODO code (after 10s) + config (k8s)
+				</section>
 				<section class="questions" data-state="flash" align="center">
 					<i class="fas fa-question fa-10x"></i>
 				</section>
@@ -202,7 +228,27 @@
 			<section>
 				<section data-state="flash" align="center">
 					<h1>Dressage</h1>
-					<aside class="notes">"containerisation" & déploiement (avec un frontal web, mini test de charge avec wrk, ...)</aside>
+					<aside class="notes">"containerisation" &amp; déploiement (avec un frontal web, mini test de charge avec wrk, ...)</aside>
+				</section>
+				<section>
+					<h2>Services</h2>
+					TODO archi overview dessin
+				</section>
+				<section>
+					<h2>Dockerfile</h2>
+					<p>see <a href="https://github.com/michiel/docker-rust-microservice" target="_blank">https://github.com/michiel/docker-rust-microservice</a></p>
+					<p><a href="https://alpinelinux.org/" target="_blank">Alpine Linux</a> uses <a href="https://www.musl-libc.org" target="_blank">musl-libc</a> instead of glibc, which is the default for most common distributions.</p>
+					<pre><code>rustup target add x86_64-unknown-linux-musl</code></pre>
+					<p>Once that is installed we can explicitly target it when building the service,</p>
+					<pre><code>cargo build --target x86_64-unknown-linux-musl --release</code></pre>
+					TODO the code
+				</section>
+				<section>
+					<h2>Dockerfile multi-stage</h2>
+					TODO
+				</section>
+				<section>
+					<h2>Deployement</h2>
 				</section>
 				<section class="questions" data-state="flash" align="center">
 					<i class="fas fa-question fa-10x"></i>
