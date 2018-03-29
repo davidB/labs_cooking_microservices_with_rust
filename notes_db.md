@@ -128,6 +128,15 @@ Once that is installed we can explicitly target it when building the service,
       - traffic shaping
     - observability
       - metrics
+        _ resources
+          - usage: %time that reource is busy
+          - saturation: amount of work resource has to do, often queue length
+          - errors: the count of error events
+          - http://www.brendangregg.com/usemethod.html
+        - request
+          - rate: number of request per seconds
+          - errors: number of those requests that are failing
+          - duration: the amount of time those requests take
       - logs
       - tracing
     - chaos testing
@@ -240,5 +249,19 @@ Once that is installed we can explicitly target it when building the service,
     - http://www.d3noob.org/2013/03/d3js-force-directed-graph-example-basic.html
   - integrate logo + link (to project,...)
 
+- utiliser tech.io ?
+- utiliser katakoda.com ?
+
 - for the code
   - use git + 1 tag (or 1 branch ?) per step ?
+
+# infra
+
+- docker + docker-compose
+- envoy (maybe istio)
+- telegraph
+- influxdb / preometheus
+- grafana
+- db : mysql or postgresql
+- eureka (?) + registrator
+- zipkin (in memory)
