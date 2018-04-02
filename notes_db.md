@@ -52,12 +52,12 @@ WIP
 - serde (rustc-serialize)
 - hyper/reqwest
 - concurrent
-    - thread
-    - future/tokio
-    - [Xudong-Huang/may: rust stackful coroutine library](https://github.com/Xudong-Huang/may)
-    - smid
+  - thread
+  - future/tokio
+  - [Xudong-Huang/may: rust stackful coroutine library](https://github.com/Xudong-Huang/may)
+  - smid
 - db
-    - diesel
+  - diesel
 
 #### build
 
@@ -230,6 +230,7 @@ Once that is installed we can explicitly target it when building the service,
   - cassandra, mongodb
 
 ### presentation ideas
+
 - mindmapping for demo ?
   - https://coggle.it/
 - wall of names, logo and show the selected one (and why in notes)
@@ -255,7 +256,12 @@ Once that is installed we can explicitly target it when building the service,
 - for the code
   - use git + 1 tag (or 1 branch ?) per step ?
 
-# infra
+## Rust + x
+
+- with nodejs:
+  - https://medium.com/@benjcal/rust-node-js-are-awesome-a50d63411773
+
+## infra
 
 - docker + docker-compose
 - envoy (maybe istio)
