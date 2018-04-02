@@ -186,6 +186,22 @@
 					<h1>Préparation</h1>
 					<aside class="notes">assemblage de libs et de code pour faire un service avec une api web (http + graphql)</aside>
 				</section>
+				<section>
+					<h2>Travis CI</h2>
+					<pre><code data-trim data-noescape>
+						# .travis.yml
+						language: rust
+						rust:
+							- stable
+							- beta
+							- nightly
+						matrix:
+							allow_failures:
+								- rust: nightly
+							fast_finish: true
+						cache: cargo
+					</code></pre>
+				</section>
 				<section class="questions" data-state="flash" align="center">
 					<i class="fas fa-question fa-10x"></i>
 				</section>
@@ -316,8 +332,8 @@
 			slideNumber: true,
 			margin: 0.0,
 			dependencies: [
-				{ src: 'plugin/markdown/marked.js' },
-				{ src: 'plugin/markdown/markdown.js' },
+				//{ src: 'plugin/markdown/marked.js' },
+				//{ src: 'plugin/markdown/markdown.js' },
 				{ src: 'plugin/notes/notes.js', async: true },
 				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
 			]
