@@ -561,6 +561,29 @@
 					<aside class="notes">est-ce mangeable? quels sont les saveurs, sucré, salé, épicé, amer ?</aside>
 				</section>
 				<section>
+					<h2>Reviews & Graphql</h2>
+					<pre><code>
+> curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
+{
+  "data" : {
+    "products" : [
+      {
+        "reviews" : [
+          {
+            "text" : "An extremely entertaining play by Shakespeare.",
+            "rating" : { "stars" : 5 }
+          },
+          ...
+        ]
+      }
+    ]
+  }
+}					</code></pre>
+					<ul>
+						<li>juniper</li>
+					</ul>
+				</section>
+				<section>
 					<h2>Troll en vrac</h2>
 					<ul>
 						<li>taille des images docker</li>
