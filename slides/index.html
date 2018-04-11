@@ -508,6 +508,34 @@
 					TODO archi overview dessin
 				</section>
 				<section>
+					<h2>Second service: Reviews</h2>
+					<pre><code>
+> curl localhost:9080/reviews/0
+{
+	"id" : 0,
+	"reviews" : [
+		{
+			"text" : "An extremely entertaining play by Shakespeare.",
+			"rating" : {
+				"color" : "blue",
+				"stars" : 5
+			},
+			"reviewer" : "Reviewer1"
+		},
+		...
+	]
+	}
+					</code></pre>
+				</section>
+				<section>
+					<h2>Second service: Reviews</h2>
+					<ul>
+						<li>actix-web, actix</li>
+						<li>diesel</li>
+						<li>chaînage de futures</li>
+					</ul>
+				</section>
+				<section>
 					<h2>Dockerfile</h2>
 					<p>see <a href="https://github.com/michiel/docker-rust-microservice" target="_blank">https://github.com/michiel/docker-rust-microservice</a></p>
 					<p><a href="https://alpinelinux.org/" target="_blank">Alpine Linux</a> uses <a href="https://www.musl-libc.org" target="_blank">musl-libc</a> instead of glibc, which is the default for most common distributions.</p>
