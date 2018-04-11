@@ -391,6 +391,59 @@
 						<li>tokio-minihttp : très bas niveau</li>
 					</ul>
 				</section>
+				<section>
+					<h2>Premier service: Ratings</h2>
+					<pre><code>
+> curl localhost:9080/ratings/0
+{
+	"id" : 0,
+	"ratings" : {
+		"Reviewer2" : 4,
+		"Reviewer1" : 5
+	}
+}
+					</code></pre>
+					<ul>
+						<li>gotham</li>
+						<li>lazy_static, Arc, Mutex</li>
+						<li>serde</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>gotham</h3>
+					<ul>
+						<li>https://gotham.rs</li>
+						<li>router les requêtes</li>
+						<li>retourner une réponse</li>
+						<li>lire le body d'une requête</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>lazy_static</h3>
+					<ul>
+						<li>https://crates.io/crates/lazy_static</li>
+						<li>variable statique initialisée à sa première utilisation</li>
+					</ul>
+					<h3>Arc, Mutex</h3>
+					<ul>
+						<li>https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/</li>
+						<li>Atomic reference count</li>
+						<li>Mutex</li>
+						<li>Box, Cow, Rc, Arc, Cell, RefCell, Mutex, RwLock</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>serde</h3>
+					<ul>
+						<li>https://serde.rs</li>
+						<li>permet de sérialiser / déserialiser par dérivation automatique</li>
+						<li>supporte JSON, URL encoded, XML, BSON, ...</li>
+						<li>configuration : https://serde.rs/attributes.html</li>
+					</ul>
+				</section>
 				<section class="questions" data-state="flash" align="center">
 					<i class="fas fa-question fa-10x"></i>
 				</section>
