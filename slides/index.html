@@ -196,6 +196,27 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>Macros</h2>
+					<pre><code data-trim data-noescape class="rust">
+						macro_rules! print_twice {
+							( $x:expr ) => {
+								{
+									println!("{:?}", twice($x));
+								}
+							};
+						}
+						print_twice!(Vec2 { x: 1, y: 1 });
+						</code></pre>
+					<dt>Macros utiles</dt>
+					<ul>
+						<li>prinln!, format!</li>
+						<li>panic!, try!</li>
+						<li>vec!</li>
+						<li>unreachable!, unimplemented!</li>
+						<li>assert!, assert_eq!</li>
+					</ul>
+				</section>
+				<section>
 					<h2>langage</h2>
 					<ul>
 						<li>struct, traits, implementation, generics</li>
