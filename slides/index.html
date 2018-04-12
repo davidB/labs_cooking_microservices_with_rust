@@ -385,16 +385,14 @@
 				</section>
 				<section>
 					<h2>Premier service: Ratings</h2>
-					<pre><code>
-> curl localhost:9080/ratings/0
+					<pre><code>> curl localhost:9080/ratings/0
 {
 	"id" : 0,
 	"ratings" : {
 		"Reviewer2" : 4,
 		"Reviewer1" : 5
 	}
-}
-					</code></pre>
+}</code></pre>
 					<ul>
 						<li>gotham</li>
 						<li>lazy_static, Arc, Mutex</li>
@@ -516,8 +514,7 @@
 				</section>
 				<section>
 					<h2>Second service: Reviews</h2>
-					<pre><code>
-> curl localhost:9080/reviews/0
+					<pre><code>> curl localhost:9080/reviews/0
 {
 	"id" : 0,
 	"reviews" : [
@@ -528,8 +525,7 @@
 		},
 		...
 	]
-	}
-					</code></pre>
+}</code></pre>
 					<ul>
 						<li>actix-web, actix</li>
 						<li>diesel</li>
@@ -563,8 +559,7 @@
 				</section>
 				<section>
 					<h2>Reviews & Graphql</h2>
-					<pre><code>
-> curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
+					<pre><code>> curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
 {
   "data" : {
     "products" : [
@@ -579,9 +574,10 @@
       }
     ]
   }
-}					</code></pre>
+}</code></pre>
 					<ul>
 						<li>juniper</li>
+						<li>attendre le futur, reqwest</li>
 					</ul>
 				</section>
 				<section>
