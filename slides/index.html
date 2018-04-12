@@ -358,29 +358,6 @@
 					<aside class="notes">assemblage de libs et de code pour faire un service avec une api web (http + graphql)</aside>
 				</section>
 				<section>
-					<h2>Travis CI</h2>
-					<pre><code data-trim data-noescape>
-						# .travis.yml
-						language: rust
-						rust:
-							- stable
-							- beta
-							- nightly
-						matrix:
-							allow_failures:
-								- rust: nightly
-							fast_finish: true
-							include:
-								- rust: stable
-									env: RUSTFMT
-									install:
-										- rustup component add rustfmt-preview
-									script:
-										- cargo fmt -- --write-mode=diff
-						cache: cargo
-					</code></pre>
-				</section>
-				<section>
 					<h2>Serveur HTTP</h2>
 					<ul>
 						<li>actix-web : asynchrone, basé sur des acteurs</li>
@@ -467,6 +444,37 @@
 					<h1>Cuisson</h1>
 					<aside class="notes">la sécurité, healthcheck/heartbeat, metrics, logs, traces, ... dashboard</aside>
 				</section>
+				<section>
+					<h2>Tests</h2>
+					<ul>
+						<li>test unitaires</li>
+						<li>test d'intégration</li>
+						<li>découpage des crates en binaire + library</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Travis CI</h2>
+					<pre><code data-trim data-noescape>
+						# .travis.yml
+						language: rust
+						rust:
+							- stable
+							- beta
+							- nightly
+						matrix:
+							allow_failures:
+								- rust: nightly
+							fast_finish: true
+							include:
+								- rust: stable
+									env: RUSTFMT
+									install:
+										- rustup component add rustfmt-preview
+									script:
+										- cargo fmt -- --write-mode=diff
+						cache: cargo
+					</code></pre>
+				</section>				
 				<section>
 					<h2>Logs</h2>
 					TODO code (startup/shutdown)
