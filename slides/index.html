@@ -402,7 +402,7 @@
 						<li>itertools : helpers pour les iterators</li>
 						<li>reqwest : requêtes HTTP bloquantes</li>
 						<li>log, env_logger, slog, fern : logs et configuration</li>
-						<li>clap : parser de command line</li>
+						<li>clap : parser de ligne de commande</li>
 						<li>uuid, chrono : types utiles</li>
 					</ul>
 				</section>
@@ -444,8 +444,7 @@
 					<h3>Arc, Mutex</h3>
 					<ul>
 						<li>https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/</li>
-						<li>Atomic reference count</li>
-						<li>Mutex</li>
+						<li>Atomic reference count + Mutex : tout le monde peut devenir owner et modifier les données dans un environment multithread</li>
 						<li>Box, Cow, Rc, Arc, Cell, RefCell, Mutex, RwLock</li>
 					</ul>
 				</section>
