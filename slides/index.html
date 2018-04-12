@@ -533,6 +533,46 @@
 					</ul>
 				</section>
 				<section>
+					<h2>code</h2>
+					<h3>actix-web</h3>
+					<ul>
+						<li>https://github.com/actix/actix-web</li>
+						<li>router les requêtes</li>
+						<li>retourner une réponse</li>
+						<li>les extractors</li>
+					</ul>
+					<h3>actix</h3>
+					<ul>
+						<li>https://github.com/actix/actix</li>
+						<li>créer un acteur et un type de message</li>
+						<li>envoyer un message et attendre la réponse</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>diesel</h3>
+					<ul>
+						<li>http://diesel.rs</li>
+						<li>diesel_cli<code><pre>cargo install diesel_cli
+DATABASE_URL=test.sqlite diesel setup</pre></code></li>
+						<li>écrire la première migration<code><pre>diesel migration generate reviews
+DATABASE_URL=test.sqlite diesel migration run
+DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
+</pre></code></li>
+						<li>écrire une requête</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>les futures</h3>
+					<ul>
+						<li>chainer les futures : map, and_then</li>
+						<li>définir ses erreurs : failures</li>
+						<li>gérer les erreurs : from_err, map_err, or_else</li>
+						<li>retourner un future : Box</li>
+					</ul>
+				</section>
+				<section>
 					<h2>Dockerfile</h2>
 					<p>see <a href="https://github.com/michiel/docker-rust-microservice" target="_blank">https://github.com/michiel/docker-rust-microservice</a></p>
 					<p><a href="https://alpinelinux.org/" target="_blank">Alpine Linux</a> uses <a href="https://www.musl-libc.org" target="_blank">musl-libc</a> instead of glibc, which is the default for most common distributions.</p>
