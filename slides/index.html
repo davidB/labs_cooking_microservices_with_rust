@@ -164,6 +164,23 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>Générique</h2>
+					<pre><code data-trim data-noescape class="rust">
+					fn twice<T, U>(x: T) -> U
+					where T: Add<Output=U>,
+						T: Copy
+					{
+						x + x
+					}
+
+					fn main() {
+						let one = Vec2 { x: 1, y: 1 };
+						
+						println!("{:?}", twice(one));
+					}
+					</code></pre>
+				</section>
+				<section>
 					<h2>ownership / borrow</h2>
 					<dt>prendre l'ownership</dt>
 					<pre><code data-trim data-noescape>
