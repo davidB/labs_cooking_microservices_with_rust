@@ -621,6 +621,27 @@ DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
 					</ul>
 				</section>
 				<section>
+					<h2>code</h2>
+					<h3>juniper</h3>
+					<ul>
+						<li>version simple : tout en dérivation automatique</li>
+						<li>endpoint graphql, graphiql (+ cors)</li>
+					</ul>
+					<h3>bloquant</h3>
+					<ul>
+						<li>attendre le futur de la requête à la base de données</li>
+						<li>reqwest pour requête http bloquante</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<h3>juniper</h3>
+					<ul>
+						<li>définit le trait manuellement</li>
+						<li>permet de ne récupérer les données d'un champ que si il est demandé</li>
+					</ul>
+				</section>
+				<section>
 					<h2>Troll en vrac</h2>
 					<ul>
 						<li>taille des images docker</li>
