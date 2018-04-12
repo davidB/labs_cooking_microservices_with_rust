@@ -77,20 +77,20 @@
 				<section>
 					<h2>Déclarer une struct</h2>
 					<pre><code data-trim data-noescape>
-						struct Vec2 {
+						struct V2 {
 							x: f64,
 							y: f64,
 						}
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape>
-						pub struct Vec2 {
+						pub struct V2 {
 							pub x: f64,
 							pub y: f64,
 						}
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape>
 							fn main(){
-								let v = Vec2{x: 10.0, y: 11_f64};
+								let v = V2{x: 10.0, y: 11_f64};
 								println!("display v: {}", v);
 							}
 						</code></pre>
@@ -98,24 +98,23 @@
 				<section>
 					<h2>Ajouter une fonction</h2>
 					<pre><code data-trim data-noescape>
-							impl Vec2 {
+							impl V2 {
 								fn to_string(&amp;self) -> String {
-									format!("Vec2 {{ x: {}, y: {} }}", self.x, self.y)
+									format!("V2 {{ x: {}, y: {} }}", self.x, self.y)
 								}
 							}
 							println!("display v: {}", v.to_string());
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape>
-						impl Vec2 {
-							fn distance(&self, other: &Vec2) -> f32 {
+							fn distance(&self, other: &V2) -> f32 {
 								let dx = self.x - other.x;
 								let dy = self.y - other.y;
 								((dx.pow(2) + dy.pow(2)) as f32).sqrt()
 							}
 						}
 
-						let a = Vec2 { x: 0, y: 0 };
-						let b = Vec2 { x: 1, y: 1 };
+						let a = V2 { x: 0, y: 0 };
+						let b = V2 { x: 1, y: 1 };
 						
 						println!("{}", a.distance(&b));
 					</code></pre>
@@ -123,18 +122,18 @@
 				<section>
 					<h2>Implémenter un trait</h2>
 					<pre><code data-trim data-noescape>
-						impl Add for Vec2 {
-							type Output = Vec2;
-							fn add(self, rhs: Vec2) -> Vec2 {
-								Vec2 {
+						impl Add for V2 {
+							type Output = V2;
+							fn add(self, rhs: V2) -> V2 {
+								V2 {
 									x: self.x + rhs.x,
 									y: self.y + rhs.y,
 								}
 							}
 						}
 						
-						impl AddAssign for Vec2 {
-							fn add_assign(&amp;mut self, rhs: Vec2) {
+						impl AddAssign for V2 {
+							fn add_assign(&amp;mut self, rhs: V2) {
 								self.x += rhs.x;
 								self.y += rhs.y;
 							}
@@ -146,9 +145,9 @@
 					<pre><code data-trim data-noescape>
 						use std::fmt;
 
-						impl fmt::Debug for Vec2 {
+						impl fmt::Debug for V2 {
 							fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -> fmt::Result {
-								write!(f, "Vec2 {{ x: {:?}, y: {:?} }}", self.x, self.y)
+								write!(f, "V2 {{ x: {:?}, y: {:?} }}", self.x, self.y)
 							}
 						}
 
@@ -159,7 +158,7 @@
 					<h2>Dérivation automatique</h2>
 					<pre><code data-trim data-noescape class="rust">
 						#[derive(Debug, Display, Clone, Copy, Hash, PartialEq, Eq)]
-						pub struct Vec2 {
+						pub struct V2 {
 							pub x: f64,
 							pub y: f64,
 						}
@@ -183,7 +182,7 @@
 					}
 
 					fn main() {
-						let one = Vec2 { x: 1, y: 1 };
+						let one = V2 { x: 1, y: 1 };
 						
 						println!("{:?}", twice(one));
 					}
@@ -247,7 +246,7 @@
 								}
 							};
 						}
-						print_twice!(Vec2 { x: 1, y: 1 });
+						print_twice!(V2 { x: 1, y: 1 });
 						</code></pre>
 					<dt>Macros utiles</dt>
 					<ul>
@@ -262,7 +261,7 @@
 					<h2>Closure</h2>
 					<pre><code data-trim data-noescape class="rust">
 					fn main() {
-						let one = Vec2 { x: 1, y: 1 };
+						let one = V2 { x: 1, y: 1 };
 						let twice = |x| x + x;
 						
 						println!("{:?}", twice(one));
@@ -278,15 +277,15 @@
 					<h2>ownership / borrow</h2>
 					<dt>prendre l'ownership</dt>
 					<pre><code data-trim data-noescape>
-						fn f(x: Vec2) {...}
+						fn f(x: V2) {...}
 					</code></pre>
 					<dt>emprunter</dt>
 					<pre><code data-trim data-noescape>
-						fn f(x: &Vec2) {...}
+						fn f(x: &V2) {...}
 					</code></pre>
 					<dt>emprunter et pouvoir modifier</dt>
 					<pre><code data-trim data-noescape>
-						fn f(x: &mut Vec2) {...}
+						fn f(x: &mut V2) {...}
 					</code></pre>
 				</section>
 				<section>
