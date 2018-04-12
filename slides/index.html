@@ -70,7 +70,7 @@
 					<aside class="notes">expliquer chaque element, la version (frequence), les liens, les features, les lignes de code</aside>
 				</section>
 				<section>
-					<h2>example Vec2</h2>
+					<h2>Déclarer un struct</h2>
 					<pre><code data-trim data-noescape>
 						struct Vec2 {
 							x: f64,
@@ -91,15 +91,54 @@
 						</code></pre>
 					</section>
 				<section>
+					<h2>Ajouter une fonction</h2>
 					<pre><code data-trim data-noescape>
-						impl Vec2 {
-							fn to_string(&amp;self) -> String {
-								format!("Vec2 {{ x: {}, y: {} }}", self.x, self.y)
+							impl Vec2 {
+								fn to_string(&amp;self) -> String {
+									format!("Vec2 {{ x: {}, y: {} }}", self.x, self.y)
+								}
 							}
-						}
-						println!("display v: {}", v.to_string());
+							println!("display v: {}", v.to_string());
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape>
+						impl Vec2 {
+							fn distance(&self, other: &Vec2) -> f32 {
+								let dx = self.x - other.x;
+								let dy = self.y - other.y;
+								((dx.pow(2) + dy.pow(2)) as f32).sqrt()
+							}
+						}
+
+						let a = Vec2 { x: 0, y: 0 };
+						let b = Vec2 { x: 1, y: 1 };
+						
+						println!("{}", a.distance(&b));
+					</code></pre>
+				</section>
+				<section>
+					<h2>Implémenter un trait</h2>
+					<pre><code data-trim data-noescape>
+						impl Add for Vec2 {
+							type Output = Vec2;
+							fn add(self, rhs: Vec2) -> Vec2 {
+								Vec2 {
+									x: self.x + rhs.x,
+									y: self.y + rhs.y,
+								}
+							}
+						}
+						
+						impl AddAssign for Vec2 {
+							fn add_assign(&amp;mut self, rhs: Vec2) {
+								self.x += rhs.x;
+								self.y += rhs.y;
+							}
+						}
+					</code></pre>
+				</section>
+				<section>
+					<h2>Implémenter un trait</h2>
+					<pre><code data-trim data-noescape>
 						use std::fmt;
 
 						impl fmt::Debug for Vec2 {
@@ -112,9 +151,10 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>Dérivation automatique</h2>
 					<pre><code data-trim data-noescape class="rust">
 						#[derive(Debug, Display, Clone, Copy, Hash, PartialEq, Eq)]
-						pub struct V2 {
+						pub struct Vec2 {
 							pub x: f64,
 							pub y: f64,
 						}
@@ -124,24 +164,18 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>ownership / borrow</h2>
+					<dt>prendre l'ownership</dt>
 					<pre><code data-trim data-noescape>
-						impl Add for Vec2 {
-							type Output = Vec2;
-						
-							fn add(self, other: Vec2) -> Vec2 {
-								Vec2 {
-									x: self.x + other.x,
-									y: self.y + other.y,
-								}
-							}
-						}
-						
-						impl AddAssign for Vec2 {
-							fn add_assign(&amp;mut self, _rhs: Vec2) {
-								self.x += _rhs.x;
-								self.y += _rhs.y;
-							}
-						}
+						fn f(x: Vec2) {...}
+					</code></pre>
+					<dt>emprunter</dt>
+					<pre><code data-trim data-noescape>
+						fn f(x: &Vec2) {...}
+					</code></pre>
+					<dt>emprunter et pouvoir modifier</dt>
+					<pre><code data-trim data-noescape>
+						fn f(x: &mut Vec2) {...}
 					</code></pre>
 				</section>
 				<section>
