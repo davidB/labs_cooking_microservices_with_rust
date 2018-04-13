@@ -70,7 +70,7 @@
 					<aside class="notes">expliquer chaque element, la version (frequence), les liens, les features, les lignes de code</aside>
 				</section>
 				<section>
-					<h2>Déclarer un struct</h2>
+					<h2>Déclarer une struct</h2>
 					<pre><code data-trim data-noescape>
 						struct Vec2 {
 							x: f64,
@@ -162,6 +162,10 @@
 						println!("debug pretty v {:#?}", v);
 						println!("display v {}", v);
 					</code></pre>
+					<ul>
+						<li>une struct peut dériver un trait si tous ses composants le dérive déjà</li>
+						<li>une enum peut dériver un trait si toutes ses variantes peuvent le dériver</li>
+					</ul>
 				</section>
 				<section>
 					<h2>Générique</h2>
