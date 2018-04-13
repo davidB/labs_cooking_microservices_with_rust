@@ -196,8 +196,8 @@
 					<pre class="fragment"><code data-trim data-noescape class="rust">
 						enum Command {
 							Help,
-							Run(i32),
-							Execute {
+							Kill(i32),
+							Run {
 								path: String,
 								options: Vec&lt;String>,
 							}
