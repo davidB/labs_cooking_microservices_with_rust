@@ -217,6 +217,22 @@
 					</ul>
 				</section>
 				<section>
+					<h2>Closure</h2>
+					<pre><code data-trim data-noescape class="rust">
+					fn main() {
+						let one = Vec2 { x: 1, y: 1 };
+						let twice = |x| x + x;
+						
+						println!("{:?}", twice(one));
+					}
+					</code></pre>
+					<ul>
+						<li>bloc de code finissant par une expression</li>
+						<li>les types peuvent être inférés</li>
+						<li>peut prendre l'ownership de l'environment: move</li>
+					</ul>
+				</section>
+				<section>
 					<h2>langage</h2>
 					<ul>
 						<li>struct, traits, implementation, generics</li>
