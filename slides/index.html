@@ -181,21 +181,6 @@
 					</code></pre>
 				</section>
 				<section>
-					<h2>ownership / borrow</h2>
-					<dt>prendre l'ownership</dt>
-					<pre><code data-trim data-noescape>
-						fn f(x: Vec2) {...}
-					</code></pre>
-					<dt>emprunter</dt>
-					<pre><code data-trim data-noescape>
-						fn f(x: &Vec2) {...}
-					</code></pre>
-					<dt>emprunter et pouvoir modifier</dt>
-					<pre><code data-trim data-noescape>
-						fn f(x: &mut Vec2) {...}
-					</code></pre>
-				</section>
-				<section>
 					<h2>Macros</h2>
 					<pre><code data-trim data-noescape class="rust">
 						macro_rules! print_twice {
@@ -231,6 +216,21 @@
 						<li>les types peuvent être inférés</li>
 						<li>peut prendre l'ownership de l'environment: move</li>
 					</ul>
+				</section>
+				<section>
+					<h2>ownership / borrow</h2>
+					<dt>prendre l'ownership</dt>
+					<pre><code data-trim data-noescape>
+						fn f(x: Vec2) {...}
+					</code></pre>
+					<dt>emprunter</dt>
+					<pre><code data-trim data-noescape>
+						fn f(x: &Vec2) {...}
+					</code></pre>
+					<dt>emprunter et pouvoir modifier</dt>
+					<pre><code data-trim data-noescape>
+						fn f(x: &mut Vec2) {...}
+					</code></pre>
 				</section>
 				<section>
 					<h2>langage</h2>
