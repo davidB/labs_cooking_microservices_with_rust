@@ -185,6 +185,30 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>Enum</h2>
+					<pre><code data-trim data-noescape class="rust">
+						enum colors {
+							Blue,
+							Yellow,
+							Green,
+						}
+					</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="rust">
+						enum Command {
+							Help,
+							Run(i32),
+							Execute {
+								path: String,
+								options: Vec&lt;String>,
+							}
+						}
+					</code></pre>
+					<ul>
+						<li class="fragment">permet de contrôler l'exhaustivité d'un pattern matching</li>
+						<li class="fragment">Result&lt;T, Err>, Option&lt;T></li>
+					</ul>
+				</section>
+				<section>
 					<h2>Macros</h2>
 					<pre><code data-trim data-noescape class="rust">
 						macro_rules! print_twice {
@@ -239,7 +263,7 @@
 				<section>
 					<h2>langage</h2>
 					<ul>
-						<li>struct, traits, implementation, generics</li>
+						<li>struct, traits, implementation, enum, generics</li>
 						<li>function, method, closure</li>
 						<li>operators, statement, expression</li>
 						<li>ownership, lifecycle</li>
