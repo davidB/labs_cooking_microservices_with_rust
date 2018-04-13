@@ -185,6 +185,30 @@
 					</code></pre>
 				</section>
 				<section>
+					<h2>Déclarer un trait</h2>
+					<div>
+						<ul>
+							<li>un trait définit une fonctionnalité</li>
+						</ul>
+						<pre><code data-trim data-noescape class="rust">
+						pub trait ToString {
+							fn to_string(&self) -> String;
+						}
+						</code></pre>
+					</div>
+					<div class="fragment">
+						<ul>
+							<li>un trait peut être générique sur ses paramètres / retours</li>
+						</ul>
+						<pre><code data-trim data-noescape class="rust">					
+						pub trait Add<RHS = Self> {
+							type Output;
+							fn add(self, rhs: RHS) -> Self::Output;
+						}
+						</code></pre>
+					</div>
+				</section>
+				<section>
 					<h2>Enum</h2>
 					<pre><code data-trim data-noescape class="rust">
 						enum colors {
