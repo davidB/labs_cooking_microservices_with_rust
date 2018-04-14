@@ -1,6 +1,6 @@
 # Service Ratings
 
-* Utilisation de serde
+* Partager des données
   * `lazy_static` pour avoir une variable accessible de partout
   * `Arc` pour y accèder de plusieurs threads
   * `Mutex` pour pouvoir la modifier
