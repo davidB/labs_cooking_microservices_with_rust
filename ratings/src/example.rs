@@ -24,8 +24,19 @@ pub fn router() -> Router {
     })
 }
 
+/// # Examples
+///
+/// ```
+/// # extern crate serde_json;
+/// # extern crate ratings;
+/// # use ratings::example::Who;
+/// # fn main() {
+///     let res = serde_json::from_str::<Who>("{\"say hello to\": \"Rust\"}");
+/// #    assert!(res.is_ok());
+/// # }
+/// ```
 #[derive(Deserialize)]
-struct Who {
+pub struct Who {
     #[serde(rename = "say hello to")]
     name: String,
 }
@@ -79,4 +90,16 @@ fn say_hello_to(state: State) -> (State, Message) {
     };
 
     (state, res)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn can_deserialize() {
+        let res = serde_json::from_str::<Who>("{\"say hello to\": \"Rust\"}");
+
+        assert!(res.is_ok());
+    }
 }
