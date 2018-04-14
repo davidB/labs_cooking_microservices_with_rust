@@ -13,7 +13,7 @@ curl http://localhost:7878/hello
 
 * À faire:
   * Sauvegarder les ratings dans une HashMap
-  * Répondre la liste des ratings sauvegardée en filtrant par product id
+  * Répondre la liste des ratings sauvegardés en filtrant par product id
 
 ```
 curl http://localhost/ratings/5 -X POST -d '{"reviewer": "my_name", "rating": 3}'
