@@ -12,7 +12,7 @@ curl http://localhost:7878/hello
 ```
 
 * À faire:
-  * Sauvegarder les ratings dans une HashMap
+  * Sauvegarder les ratings dans une liste
   * Répondre la liste des ratings sauvegardés en filtrant par product id
 
 ```
