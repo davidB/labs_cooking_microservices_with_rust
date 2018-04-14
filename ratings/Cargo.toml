@@ -1,0 +1,15 @@
+[package]
+name = "ratings"
+version = "0.1.0"
+authors = ["François Mockers <mockersf@gmail.com>"]
+
+[dependencies]
+gotham = "0.2"
+gotham_derive = "0.2"
+
+futures = "0.1"
+hyper = "0.11"
+mime = "0.3"
+
+serde = "1.0"
+serde_derive = "1.0"
