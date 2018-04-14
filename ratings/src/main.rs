@@ -11,6 +11,11 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
+#[macro_use]
+extern crate lazy_static;
+
+use std::sync::{Arc, Mutex};
+
 use gotham::http::response::create_response;
 use gotham::state::{FromState, State};
 use gotham::router::Router;
@@ -20,44 +25,35 @@ use gotham::handler::{HandlerFuture, IntoHandlerError, IntoResponse};
 use hyper::{Body, Response, StatusCode};
 use futures::{future, Future, Stream};
 
-#[derive(Deserialize, StateData, StaticResponseExtender)]
-struct NamePathExtractor {
-    name: String,
+lazy_static! {
+    static ref NAME: Arc<Mutex<String>> = { Arc::new(Mutex::new("world".to_string())) };
 }
 
 fn router() -> Router {
     build_simple_router(|route| {
-        route.post("/hello").to(say_hello_to_body);
+        route.post("/hello").to(save_who_to_say_hello_to);
 
-        route
-            .get("/goodbye/:name")
-            .with_path_extractor::<NamePathExtractor>()
-            .to(say_goodbye_to_path_with_struct);
+        route.get("/hello").to(say_hello_to);
     })
 }
 
-// serde attributes
-// https://serde.rs/field-attrs.html
 #[derive(Deserialize)]
 struct Who {
     #[serde(rename = "say hello to")]
     name: String,
 }
 
-fn say_hello_to_body(mut state: State) -> Box<HandlerFuture> {
+fn save_who_to_say_hello_to(mut state: State) -> Box<HandlerFuture> {
     let f = Body::take_from(&mut state)
         .concat2()
         .then(|full_body| match full_body {
             Ok(valid_body) => {
                 let res = match serde_json::from_slice::<Who>(&valid_body.to_vec()) {
-                    Ok(who) => create_response(
-                        &state,
-                        StatusCode::Ok,
-                        Some((
-                            format!("Hello {}!", who.name).into_bytes(),
-                            mime::TEXT_PLAIN,
-                        )),
-                    ),
+                    Ok(who) => {
+                        let mut name = NAME.lock().unwrap();
+                        *name = who.name.clone();
+                        create_response(&state, StatusCode::Ok, None)
+                    }
                     Err(_) => create_response(&state, StatusCode::BadRequest, None),
                 };
                 future::ok((state, res))
@@ -89,13 +85,10 @@ impl IntoResponse for Message {
     }
 }
 
-fn say_goodbye_to_path_with_struct(state: State) -> (State, Message) {
-    let res = {
-        let who = NamePathExtractor::borrow_from(&state);
-        Message {
-            interjection: "Goodbye",
-            name: who.name.clone(),
-        }
+fn say_hello_to(state: State) -> (State, Message) {
+    let res = Message {
+        interjection: "Hello",
+        name: NAME.lock().unwrap().clone(),
     };
 
     (state, res)
