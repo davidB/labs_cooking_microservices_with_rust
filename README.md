@@ -4,6 +4,7 @@
   * Répondre aux requêtes en GET et en POST
   * Lire les données du path
   * Lire les données du body
+  * Répondre une struct implémentant `IntoResponse`
 
 * À faire:
   * Répondre sur GET /ratings/:product_id

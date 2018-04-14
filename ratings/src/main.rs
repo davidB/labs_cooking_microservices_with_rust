@@ -14,7 +14,7 @@ use gotham::http::response::create_response;
 use gotham::state::{FromState, State};
 use gotham::router::Router;
 use gotham::router::builder::*;
-use gotham::handler::{HandlerFuture, IntoHandlerError};
+use gotham::handler::{HandlerFuture, IntoHandlerError, IntoResponse};
 
 use hyper::{Body, Response, StatusCode};
 use futures::{future, Future, Stream};
@@ -38,6 +38,11 @@ fn router() -> Router {
             .to(say_hello_to_path);
 
         route.post("/hello").to(say_hello_to_body);
+
+        route
+            .get("/goodbye/:name")
+            .with_path_extractor::<NamePathExtractor>()
+            .to(say_goodbye_to_path_with_struct);
     })
 }
 
@@ -89,6 +94,38 @@ fn say_hello_to_body(mut state: State) -> Box<HandlerFuture> {
         });
 
     Box::new(f)
+}
+
+// Replying a struct
+// https://github.com/gotham-rs/gotham/tree/master/examples/into_response/introduction
+struct Message {
+    interjection: &'static str,
+    name: String,
+}
+
+impl IntoResponse for Message {
+    fn into_response(self, state: &State) -> Response {
+        create_response(
+            state,
+            StatusCode::Ok,
+            Some((
+                format!("{} {}!", self.interjection, self.name).into_bytes(),
+                mime::TEXT_PLAIN,
+            )),
+        )
+    }
+}
+
+fn say_goodbye_to_path_with_struct(state: State) -> (State, Message) {
+    let res = {
+        let who = NamePathExtractor::borrow_from(&state);
+        Message {
+            interjection: "Goodbye",
+            name: who.name.clone(),
+        }
+    };
+
+    (state, res)
 }
 
 pub fn main() {
