@@ -1,8 +1,10 @@
-# ratings - 5 : config
+# ratings - 6 : logs
 
-* Configuration
-  * Peut se charger à partir de l'environment
-  * en lazy_static pour être accessible de partout
+* Logs
+  * `log` crate et ses macros: `debug!`, `info!`, `warn!`, `error!`
+  * `env_logger` pour configurer les logs par variable d'environment
+  * `fern` pour avoir une configuration avancée sur les niveaux de logs, le format, les sorties, ...
+  * `slog` pour un framework de logs aux idées bien arrêtées
 
 * À faire:
-  * Jouer avec
+  * Logger des messages utiles
