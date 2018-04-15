@@ -21,7 +21,11 @@ fn it_saves_name() {
     let test_server = TestServer::new(ratings::example::router()).unwrap();
     let response_post = test_server
         .client()
-        .post("http://localhost/hello", format!("{{\"say hello to\": \"{}\"}}", random_name), mime::APPLICATION_JSON)
+        .post(
+            "http://localhost/hello",
+            format!("{{\"say hello to\": \"{}\"}}", random_name),
+            mime::APPLICATION_JSON,
+        )
         .perform()
         .unwrap();
 
@@ -35,7 +39,11 @@ fn it_saves_name() {
 
     assert_eq!(response_get.status(), StatusCode::Ok);
 
-    assert_eq!(response_get.read_utf8_body().unwrap(),
-        format!("{{\"interjection\":\"Hello\",\"name\":\"{}\"}}", random_name));
+    assert_eq!(
+        response_get.read_utf8_body().unwrap(),
+        format!(
+            "{{\"interjection\":\"Hello\",\"name\":\"{}\"}}",
+            random_name
+        )
+    );
 }
-
