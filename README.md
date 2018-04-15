@@ -1,20 +1,19 @@
-# reviews - 2 : actix
+# reviews - 3 : diesel
 
-* Acteurs avec actix
-  * Un acteur et des messages typés
-  * L'isoler avec `SyncArbiter`
-  * Envoyer un message
-  * Envoyer un message et attendre le résultat dans le future
+* Connection à une base de données avec diesel
+  * Créer la DB avec diesel cli
+  * Table pour stocker un nom et un id
 
 ```
-curl http://localhost:9080/hello
-curl http://localhost:9080/hello -H 'Content-Type: application/json' -X POST -d '{"say hello to": "Rust"}'
-curl http://localhost:9080/hello
+curl http://localhost:9080/hello/1
+curl http://localhost:9080/hello/1 -H 'Content-Type: application/json' -X POST -d '{"say hello to": "Rust"}'
+curl http://localhost:9080/hello/1
 ```
 
 * À faire:
-  * Ajouter un type de message GetReviews avec un product_id
+  * Créer la migration pour les review
   * Ajouter un type de message SaveReview
+  * Ajouter un type de message GetReviews
 
 ```
 curl http://localhost/reviews/5

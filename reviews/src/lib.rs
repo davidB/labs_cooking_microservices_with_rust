@@ -7,6 +7,10 @@ extern crate serde;
 extern crate serde_derive;
 
 #[macro_use]
+extern crate diesel;
+extern crate r2d2;
+
+#[macro_use]
 extern crate log;
 
 extern crate time;
@@ -18,10 +22,16 @@ use actix_web::middleware::Logger;
 use actix_web::{http, server, App};
 use actix::prelude::*;
 
+use diesel::prelude::*;
+use diesel::r2d2::ConnectionManager;
+
 mod config;
 mod health;
 mod example;
 mod db;
+
+mod models;
+mod schema;
 
 lazy_static! {
     static ref CONFIG: config::Config = config::Config::new();
@@ -34,9 +44,11 @@ pub struct AppState {
 pub fn run(addr: &str) {
     let sys = actix::System::new("reviews");
 
-    let db_addr = SyncArbiter::start(1, move || db::DbExecutor {
-        name: "world".to_string(),
-    });
+    let manager = ConnectionManager::<SqliteConnection>::new(CONFIG.database_url.clone());
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.");
+    let db_addr = SyncArbiter::start(3, move || db::DbExecutor(pool.clone()));
 
     server::new(move || {
         App::with_state(AppState {
@@ -45,9 +57,9 @@ pub fn run(addr: &str) {
             .resource("/health", |r| {
                 r.method(http::Method::GET).f(health::healthcheck)
             })
-            .resource("/hello", |r| {
-                r.method(http::Method::GET).with(example::say_hello);
-                r.method(http::Method::POST).with2(example::save_name);
+            .resource("/hello/{id}", |r| {
+                r.method(http::Method::GET).with2(example::say_hello);
+                r.method(http::Method::POST).with3(example::save_name);
             })
     }).bind(addr)
         .unwrap()

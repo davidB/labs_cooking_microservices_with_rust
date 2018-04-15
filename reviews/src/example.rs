@@ -1,7 +1,12 @@
-use actix_web::{AsyncResponder, FutureResponse, HttpResponse, Json, Result, State};
+use actix_web::{AsyncResponder, FutureResponse, HttpResponse, Json, Result, State, Path};
 use futures::future::Future;
 
 use db;
+
+#[derive(Deserialize)]
+pub struct IdPathExtractor {
+    id: i32,
+}
 
 #[derive(Serialize)]
 struct Message {
@@ -9,10 +14,10 @@ struct Message {
     name: String,
 }
 
-pub fn say_hello(state: State<super::AppState>) -> FutureResponse<HttpResponse> {
+pub fn say_hello(state: State<super::AppState>, hello: Path<IdPathExtractor>) -> FutureResponse<HttpResponse> {
     state
         .db
-        .send(db::GetName)
+        .send(db::GetName(hello.id))
         .from_err()
         .and_then(|name| {
             Ok(HttpResponse::Ok().json(Message {
@@ -29,9 +34,10 @@ pub struct Who {
     name: String,
 }
 
-pub fn save_name(who: Json<Who>, state: State<super::AppState>) -> Result<HttpResponse> {
+pub fn save_name(who: Json<Who>, state: State<super::AppState>, hello: Path<IdPathExtractor>) -> Result<HttpResponse> {
     state.db.do_send(db::SaveName {
         name: who.name.clone(),
+        id: hello.id
     });
 
     Ok(HttpResponse::Ok().finish())
