@@ -1,4 +1,4 @@
-# Service Ratings
+# ratings - 3 : db
 
 * Partager des données
   * `lazy_static` pour avoir une variable accessible de partout
