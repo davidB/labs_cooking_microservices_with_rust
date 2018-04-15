@@ -1,6 +1,4 @@
-# ratings - 1
-
-## Service Ratings
+# ratings - 1 : gotham
 
 * Squelette de service avec Gotham
   * Répondre aux requêtes en GET et en POST
