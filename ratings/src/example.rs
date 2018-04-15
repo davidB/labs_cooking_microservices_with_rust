@@ -41,7 +41,7 @@ impl IntoResponse for Healthcheck {
 fn healthcheck(state: State) -> (State, Healthcheck) {
     let res = Healthcheck {
         now: time::now_utc().to_timespec().sec,
-        version: env!("CARGO_PKG_VERSION")
+        version: env!("CARGO_PKG_VERSION"),
     };
 
     (state, res)
