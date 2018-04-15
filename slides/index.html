@@ -96,12 +96,12 @@
 						}
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape>
-							fn main(){
-								let v = V2{x: 10.0, y: 11_f64};
-								println!("display v: {}", v);
-							}
-						</code></pre>
-					</section>
+						fn main(){
+							let v = V2{x: 10.0, y: 11_f64};
+							println!("display v: {}", v);
+						}
+					</code></pre>
+				</section>
 				<section>
 					<h2>Ajouter une fonction</h2>
 					<pre><code data-trim data-noescape>
@@ -110,55 +110,32 @@
 									format!("V2 {{ x: {}, y: {} }}", self.x, self.y)
 								}
 							}
+							//...
 							println!("display v: {}", v.to_string());
 					</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>
-							fn distance(&self, other: &V2) -> f32 {
-								let dx = self.x - other.x;
-								let dy = self.y - other.y;
-								((dx.pow(2) + dy.pow(2)) as f32).sqrt()
-							}
-						}
-
-						let a = V2 { x: 0, y: 0 };
-						let b = V2 { x: 1, y: 1 };
-						
-						println!("{}", a.distance(&b));
-					</code></pre>
 				</section>
 				<section>
-					<h2>Implémenter un trait</h2>
-					<pre><code data-trim data-noescape>
-						impl Add for V2 {
-							type Output = V2;
-							fn add(self, rhs: V2) -> V2 {
-								V2 {
-									x: self.x + rhs.x,
-									y: self.y + rhs.y,
-								}
-							}
-						}
-						
-						impl AddAssign for V2 {
-							fn add_assign(&amp;mut self, rhs: V2) {
-								self.x += rhs.x;
-								self.y += rhs.y;
-							}
-						}
+					<h2>Idiomatic</h2>
+					<pre><code data-trim data-noescape class="shell">
+						error[E0277]: `V2` doesn't implement `std::fmt::Display`
+						--> src/main.rs:8:31
+							|
+						8	|     println!("display v: {}", v);
+							|                               ^ `V2` cannot be formatted with the default formatter; try using `:?` instead if you are using a format string
+							|
+							= help: the trait `std::fmt::Display` is not implemented for `V2`
+							= note: required by `std::fmt::Display::fmt`
 					</code></pre>
-				</section>
-				<section>
-					<h2>Implémenter un trait</h2>
-					<pre><code data-trim data-noescape>
+					<pre class="fragment"><code data-trim data-noescape class="rust">
 						use std::fmt;
 
-						impl fmt::Debug for V2 {
+						impl fmt::Display for V2 {
 							fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -> fmt::Result {
-								write!(f, "V2 {{ x: {:?}, y: {:?} }}", self.x, self.y)
+								write!(f, "V2 {{ x: {}, y: {} }}", self.x, self.y)
 							}
 						}
-
-						println!("debug v {:?}", v);
+						//...
+						println!("display v {}", v);
 					</code></pre>
 				</section>
 				<section>
@@ -169,9 +146,9 @@
 							pub x: f64,
 							pub y: f64,
 						}
+						println!("display v {}", v);
 						println!("debug v {:?}", v);
 						println!("debug pretty v {:#?}", v);
-						println!("display v {}", v);
 					</code></pre>
 					<ul>
 						<li>une struct peut dériver un trait si tous ses composants le dérive déjà</li>
@@ -220,9 +197,30 @@
 					</div>
 				</section>
 				<section>
+					<h2>Implémenter un operateur</h2>
+					<pre><code data-trim data-noescape class="rust">
+						impl Add for V2 {
+							type Output = V2;
+							fn add(self, rhs: V2) -> V2 {
+								V2 {
+									x: self.x + rhs.x,
+									y: self.y + rhs.y,
+								}
+							}
+						}
+						
+						impl AddAssign for V2 {
+							fn add_assign(&amp;mut self, rhs: V2) {
+								self.x += rhs.x;
+								self.y += rhs.y;
+							}
+						}
+					</code></pre>
+				</section>
+				<section>
 					<h2>Enum</h2>
 					<pre><code data-trim data-noescape class="rust">
-						enum colors {
+						enum Colors {
 							Blue,
 							Yellow,
 							Green,
@@ -255,13 +253,13 @@
 						}
 						print_twice!(V2 { x: 1, y: 1 });
 						</code></pre>
-					<dt>Macros utiles</dt>
+					<h4>Macros utiles</h4>
 					<ul>
-						<li>println!, format!</li>
-						<li>panic!, try!</li>
+						<li>println!, eprintln!, format!</li>
 						<li>vec!</li>
 						<li>unreachable!, unimplemented!</li>
 						<li>assert!, assert_eq!</li>
+						<li>panic!, try!</li>
 					</ul>
 				</section>
 				<section>
@@ -282,18 +280,20 @@
 				</section>
 				<section>
 					<h2>ownership / borrow</h2>
+					<dl>
 					<dt>prendre l'ownership</dt>
-					<pre><code data-trim data-noescape>
+					<dd><pre><code data-trim data-noescape class="rust">
 						fn f(x: V2) {...}
-					</code></pre>
+					</code></pre></dd>
 					<dt>emprunter</dt>
-					<pre><code data-trim data-noescape class="rust">
+					<dd><pre><code data-trim data-noescape class="rust">
 						fn f(x: &amp;V2) {...}
-					</code></pre>
+					</code></pre></dd>
 					<dt>emprunter et pouvoir modifier</dt>
-					<pre><code data-trim data-noescape class="rust">
+					<dd><pre><code data-trim data-noescape class="rust">
 						fn f(x: &amp;mut V2) {...}
-					</code></pre>
+					</code></pre></dd>
+					</dl>
 				</section>
 				<section>
 					<h2>langage</h2>
@@ -312,7 +312,12 @@
 				<section>
 					<h2>guides</h2>
 					<ul>
-						<li><a href="https://rust-lang.org/" target="_blank">https://rust-lang.org/</a></li>
+						<li><a href="https://rust-lang.org/" target="_blank">https://rust-lang.org/</a>
+							<ul>
+								<li><a href="https://steveklabnik.github.io/rust-in-ten-slides/" target="_blank">https://steveklabnik.github.io/rust-in-ten-slides/</a></li>
+								<li><a href="http://intorust.com/" target="_blank">http://intorust.com/</a></li>
+							</ul>
+						</li>
 						<li><a href="https://crates.io/" target="_blank">https://crates.io/</a></li>
 						<li><a href="https://this-week-in-rust.org/" target="_blank">https://this-week-in-rust.org/</a></li>
 						<li><a href="https://www.reddit.com/r/rust/" target="_blank">https://www.reddit.com/r/rust/</a></li>
@@ -366,7 +371,7 @@
 					</section>
 				<section>
 					<h2>base toolchain</h2>
-					<dl style="width:100%">
+					<dl>
 						<dt>rustc</dt>
 						<dd>
 							<pre><code data-trim data-noescape class="sh">
@@ -440,18 +445,27 @@
 				</section>
 				<section>
 					<h2>cargo</h2>
-					<pre><code data-trim data-noescape>
+					<pre><code data-trim data-noescape class="sh">
 						cargo doc
 						open target/doc/hello/index.html
+					</code></pre>
+					<pre><code data-trim data-noescape class="rust">
+						/// This comment documents the `foo` function.
+						///
+						/// You can use the `rustdoc` tool via `cargo doc` to generate
+						/// HTML documentation from these comments!
+						fn foo() {
+							// ...
+						}
 					</code></pre>
 				</section>
 				<section>
 					<h2>cargo</h2>
-					<pre><code data-trim data-noescape>~/.cargo/bin</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>cargo install ripgrep</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>cargo install cargo-watch</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>cargo install cargo-make</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>cargo install --list</code></pre>
+					<pre><code data-trim data-noescape class="sh">~/.cargo/bin</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install ripgrep https</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install cargo-watch</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install cargo-make</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install --list</code></pre>
 				</section>
 				<section>
 					<h2>IDE &amp; Editor</h2>
@@ -538,14 +552,15 @@
 				</section>
 				<section>
 					<h2>Premier service: Ratings</h2>
-					<pre><code>> curl localhost:9080/ratings/0
-{
-	"id" : 0,
-	"ratings" : {
-		"Reviewer2" : 4,
-		"Reviewer1" : 5
-	}
-}</code></pre>
+					<pre><code data-trim data-noescape class="console">
+						curl localhost:9080/ratings/0
+						{
+							"id" : 0,
+							"ratings" : {
+								"Reviewer2" : 4,
+								"Reviewer1" : 5
+							}
+						}</code></pre>
 					<ul>
 						<li>gotham</li>
 						<li>serde</li>
@@ -600,7 +615,7 @@
 				</section>
 				<section>
 					<h2>Travis CI</h2>
-					<pre><code data-trim data-noescape>
+					<pre><code data-trim data-noescape class="yaml">
 						# .travis.yml
 						language: rust
 						rust:
@@ -676,18 +691,20 @@
 				</section>
 				<section>
 					<h2>Second service: Reviews</h2>
-					<pre><code>> curl localhost:9080/reviews/0
-{
-	"id" : 0,
-	"reviews" : [
-		{
-			"text" : "An extremely entertaining play by Shakespeare.",
-			"rating" : { "color" : "blue", "stars" : 5 },
-			"reviewer" : "Reviewer1"
-		},
-		...
-	]
-}</code></pre>
+					<pre><code data-trim data-noescape class="sh">
+						curl localhost:9080/reviews/0
+						{
+							"id" : 0,
+							"reviews" : [
+								{
+									"text" : "An extremely entertaining play by Shakespeare.",
+									"rating" : { "color" : "blue", "stars" : 5 },
+									"reviewer" : "Reviewer1"
+								},
+								...
+							]
+						}
+					</code></pre>
 					<ul>
 						<li>actix-web, actix</li>
 						<li>diesel</li>
@@ -715,13 +732,20 @@
 					<dt>diesel</dt>
 					<ul>
 						<li>http://diesel.rs</li>
-						<li>diesel_cli<code><pre>cargo install diesel_cli
-DATABASE_URL=test.sqlite diesel setup</pre></code></li>
-						<li>écrire la première migration<code><pre>diesel migration generate reviews
-DATABASE_URL=test.sqlite diesel migration run
-DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
-</pre></code></li>
-						<li>écrire une requête</li>
+						<li>diesel_cli
+							<pre><code data-trim data-noescape class="sh">
+								cargo install diesel_cli
+								DATABASE_URL=test.sqlite diesel setup
+							</code></pre>
+						</li>
+						<li>écrire la première migration
+							<pre><code data-trim data-noescape class="sh">
+									diesel migration generate reviews
+									DATABASE_URL=test.sqlite diesel migration run
+									DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
+								</code></pre>
+							</li>
+							<li>écrire une requête</li>
 					</ul>
 				</section>
 				<section>
@@ -761,22 +785,25 @@ DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
 				</section>
 				<section>
 					<h2>Reviews & Graphql</h2>
-					<pre><code>> curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
-{
-  "data" : {
-    "products" : [
-      {
-        "reviews" : [
-          {
-            "text" : "An extremely entertaining play by Shakespeare.",
-            "rating" : { "stars" : 5 }
-          },
-          ...
-        ]
-      }
-    ]
-  }
-}</code></pre>
+					<pre><code data-trim data-noescape class="sh">
+
+						curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
+						{
+							"data" : {
+								"products" : [
+									{
+										"reviews" : [
+										{
+											"text" : "An extremely entertaining play by Shakespeare.",
+											"rating" : { "stars" : 5 }
+										},
+										...
+										]
+									}
+								]
+							}
+						}
+					</code></pre>
 					<ul>
 						<li>juniper</li>
 						<li>attendre le futur, reqwest</li>
@@ -836,6 +863,7 @@ DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
 					<ul>
 						<li>Contribuer a des crates opensource</li>
 						<li>CodinGame, ...</li>
+						<li>exercism.io</li>
 						<li>???</li>
 					</ul>
 					<aside class="notes"></aside>
