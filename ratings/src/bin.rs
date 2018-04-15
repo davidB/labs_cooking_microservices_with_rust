@@ -49,5 +49,7 @@ fn main() {
 
     demo_log();
 
-    ratings::start();
+    slog_scope::scope(&slog_scope::logger().new(slog_o!("scope" => "1")), || {
+        ratings::start()
+    });
 }
