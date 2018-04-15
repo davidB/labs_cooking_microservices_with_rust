@@ -1,4 +1,4 @@
-# Service Ratings
+# ratings - 5 : config
 
 * Configuration
   * Peut se charger à partir de l'environment
