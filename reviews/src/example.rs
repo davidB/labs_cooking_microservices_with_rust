@@ -1,4 +1,4 @@
-use actix_web::{AsyncResponder, FutureResponse, HttpResponse, Json, Result, State, Path};
+use actix_web::{AsyncResponder, FutureResponse, HttpResponse, Json, Path, Result, State};
 use futures::future::Future;
 
 use db;
@@ -14,7 +14,10 @@ struct Message {
     name: String,
 }
 
-pub fn say_hello(state: State<super::AppState>, hello: Path<IdPathExtractor>) -> FutureResponse<HttpResponse> {
+pub fn say_hello(
+    state: State<super::AppState>,
+    hello: Path<IdPathExtractor>,
+) -> FutureResponse<HttpResponse> {
     state
         .db
         .send(db::GetName(hello.id))
@@ -34,10 +37,14 @@ pub struct Who {
     name: String,
 }
 
-pub fn save_name(who: Json<Who>, state: State<super::AppState>, hello: Path<IdPathExtractor>) -> Result<HttpResponse> {
+pub fn save_name(
+    who: Json<Who>,
+    state: State<super::AppState>,
+    hello: Path<IdPathExtractor>,
+) -> Result<HttpResponse> {
     state.db.do_send(db::SaveName {
         name: who.name.clone(),
-        id: hello.id
+        id: hello.id,
     });
 
     Ok(HttpResponse::Ok().finish())
