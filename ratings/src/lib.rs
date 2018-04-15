@@ -14,6 +14,8 @@ extern crate serde_json;
 #[macro_use]
 extern crate lazy_static;
 
+extern crate time;
+
 pub mod example;
 mod config;
 

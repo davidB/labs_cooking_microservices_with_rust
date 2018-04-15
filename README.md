@@ -1,10 +1,9 @@
-# ratings - 6 : logs
+# ratings -  : healthcheck
 
 * Logs
-  * `log` crate et ses macros: `debug!`, `info!`, `warn!`, `error!`
-  * `env_logger` pour configurer les logs par variable d'environment
-  * `fern` pour avoir une configuration avancée sur les niveaux de logs, le format, les sorties, ...
-  * `slog` pour un framework de logs aux idées bien arrêtées
+  * `env!` pour accèder aux variables d'environment pendant la compile, [cargo en met plusieurs à dispo](https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates)
+  * 
+  * time pour avoir un timestamp
 
 * À faire:
-  * Logger des messages utiles
+  * Jouer avec

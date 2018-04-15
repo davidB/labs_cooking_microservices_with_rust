@@ -1,83 +1,36 @@
-use std::sync::{Arc, Mutex};
-
 use gotham::http::response::create_response;
-use gotham::state::{FromState, State};
+use gotham::state::State;
 use gotham::router::Router;
 use gotham::router::builder::*;
-use gotham::handler::{HandlerFuture, IntoHandlerError, IntoResponse};
+use gotham::handler::IntoResponse;
 
-use hyper::{Body, Response, StatusCode};
-use futures::{future, Future, Stream};
+use hyper::{Response, StatusCode};
 use mime;
 
 use serde_json;
 
-use CONFIG;
-
-lazy_static! {
-    static ref NAME: Arc<Mutex<String>> = { Arc::new(Mutex::new("world".to_string())) };
-}
+use time;
 
 pub fn router() -> Router {
     build_simple_router(|route| {
-        route.post("/hello").to(save_who_to_say_hello_to);
-
-        route.get("/hello").to(say_hello_to);
+        route.get("/health").to(healthcheck);
     })
 }
 
-/// # Examples
-///
-/// ```
-/// # extern crate serde_json;
-/// # extern crate ratings;
-/// # use ratings::example::Who;
-/// # fn main() {
-///     let res = serde_json::from_str::<Who>("{\"say hello to\": \"Rust\"}");
-/// #    assert!(res.is_ok());
-/// # }
-/// ```
-#[derive(Deserialize)]
-pub struct Who {
-    #[serde(rename = "say hello to")]
-    name: String,
-}
-
-fn save_who_to_say_hello_to(mut state: State) -> Box<HandlerFuture> {
-    let f = Body::take_from(&mut state)
-        .concat2()
-        .then(|full_body| match full_body {
-            Ok(valid_body) => {
-                let res = match serde_json::from_slice::<Who>(&valid_body.to_vec()) {
-                    Ok(who) => {
-                        let mut name = NAME.lock().unwrap();
-                        *name = who.name.clone();
-                        create_response(&state, StatusCode::Ok, None)
-                    }
-                    Err(_) => create_response(&state, StatusCode::BadRequest, None),
-                };
-                future::ok((state, res))
-            }
-            Err(e) => return future::err((state, e.into_handler_error())),
-        });
-
-    Box::new(f)
-}
-
 #[derive(Serialize)]
-struct Message {
-    interjection: String,
-    name: String,
+struct Healthcheck {
+    now: i64,
+    version: &'static str,
 }
 
-impl IntoResponse for Message {
+impl IntoResponse for Healthcheck {
     fn into_response(self, state: &State) -> Response {
         create_response(
             state,
             StatusCode::Ok,
             Some((
                 serde_json::to_string(&self)
-                    .expect("serialized Message")
+                    .expect("serialized Healthcheck")
                     .into_bytes(),
                 mime::APPLICATION_JSON,
             )),
@@ -85,10 +38,10 @@ impl IntoResponse for Message {
     }
 }
 
-fn say_hello_to(state: State) -> (State, Message) {
-    let res = Message {
-        interjection: CONFIG.interjection.clone(),
-        name: NAME.lock().unwrap().clone(),
+fn healthcheck(state: State) -> (State, Healthcheck) {
+    let res = Healthcheck {
+        now: time::now_utc().to_timespec().sec,
+        version: env!("CARGO_PKG_VERSION")
     };
 
     (state, res)
