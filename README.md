@@ -1,8 +1,8 @@
-# ratings - 6 : logs
+# ratings - final
 
-* Logs
-  * `log` crate et ses macros: `debug!`, `info!`, `warn!`, `error!`
-  * `slog` pour un framework de logs aux idées bien arrêtées, découpé en plein de crates
+```
+curl localhost:9080/ratings/0
 
-* À faire:
-  * Logger des messages utiles
+curl localhost:9080/ratings/5 -i -X POST -d '{"reviewer":"user7","rating":3}'
+curl localhost:9080/ratings/5
+```
