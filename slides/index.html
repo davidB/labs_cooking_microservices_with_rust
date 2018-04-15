@@ -338,12 +338,14 @@
 							<ul>
 								<li><a href="https://steveklabnik.github.io/rust-in-ten-slides/" target="_blank">https://steveklabnik.github.io/rust-in-ten-slides/</a></li>
 								<li><a href="http://intorust.com/" target="_blank">http://intorust.com/</a></li>
+								<li><a href="https://rust-lang-nursery.github.io/rust-cookbook/" target="_blank">https://rust-lang-nursery.github.io/rust-cookbook/</a></li>
+								<li><a href="https://rust-lang-nursery.github.io/rust-clippy/master/index.html" target="_blank">All the Clippy Lints</a></li>
+								<li><a href="https://github.com/rust-unofficial/patterns" target="_blank">https://github.com/rust-unofficial/patterns</a></li>
 							</ul>
 						</li>
 						<li><a href="https://crates.io/" target="_blank">https://crates.io/</a></li>
 						<li><a href="https://this-week-in-rust.org/" target="_blank">https://this-week-in-rust.org/</a></li>
 						<li><a href="https://www.reddit.com/r/rust/" target="_blank">https://www.reddit.com/r/rust/</a></li>
-						<li><a href="https://github.com/rust-unofficial/patterns" target="_blank">https://github.com/rust-unofficial/patterns</a></li>
 					</ul>
 				</section>
 				<section>
@@ -377,7 +379,7 @@
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup show</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup update</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup component add rustfmt-preview</code></pre>
-					<!--pre class="fragment"><code data-trim data-noescape>rustup rls-preview</code></pre-->
+					<pre class="fragment"><code data-trim data-noescape class="sh">rustup component add rls-preview</code></pre>
 					<aside class="notes">
 						* check on Windows
 					</aside>
@@ -491,33 +493,79 @@
 				</section>
 				<section>
 					<h2>IDE &amp; Editor</h2>
-					rls
-					TODO setup vscode, extension,...
+					<ul>
+						<li><a href="https://areweideyet.com/" target="_blank">https://areweideyet.com/</a></li>
+						<li>RLS</li>
+						<li>Visual Studio Code + Rust (rls)</li>
+						<li>IntelliJ / CLion + Rust plugin</li>
+					</ul>
 				</section>
 				<section>
 					<h2>clippy</h2>
-					TODO
+					<blockquote>A collection of lints to catch common mistakes and improve your Rust code.</blockquote>
+					<dl>
+						<dt>install</dt>
+						<dd>
+							<pre><code data-trim data-noescape class="sh">
+								rustup install nightly
+								cargo +nightly install --force clippy
+							</code></pre>
+						</dd>
+						<dt>run</dt>
+						<dd>
+							<pre><code data-trim data-noescape class="sh">
+								cargo +nightly clippy
+							</code></pre>
+						</dd>
+					</dl>
 				</section>
-				<section>
+				<section align="center">
 					<h2>debugger</h2>
-					TODO GDB, LLDB
-					<ul>
-						<li><a href="https://bryce.fisher-fleig.org/blog/debugging-rust-programs-with-lldb/index.html" target="_blank">Debugging Rust programs with lldb on MacOS | Bryce Fisher-Fleig</a></li>
-					</ul>
+					<p>via GDB / LLDB</p>
+					<p><i class="fas fa-frown fa-5x"></i></p>
+					<p><a href="https://bryce.fisher-fleig.org/blog/debugging-rust-programs-with-lldb/index.html" target="_blank">Debugging Rust programs with lldb on MacOS | Bryce Fisher-Fleig</a></p>
 				</section>
 				<section>
 					<h2>profiler</h2>
 					<ul>
+						<li><a href="http://valgrind.org/" target="_blank">Valgrind</a></li>
 						<li><a href="https://bluejekyll.github.io/blog/rust/2017/12/29/making-trust-dns-fast.html" target="_blank">Making TRust-DNS faster than BIND9</a></li>
 						<li><a href="https://gist.github.com/jFransham/369a86eff00e5f280ed25121454acec1" target="_blank">Rust Optimization.md</a></li>
 						<li><a href="http://carol-nichols.com/2015/12/09/rust-profiling-on-osx-cpu-time/" target="_blank">Rust Profiling with Instruments and FlameGraph on OSX: CPU/Time</a></li>
+						<li><a href="https://github.com/RazrFalcon/cargo-bloat" target="_blank">cargo-bloat</a></li>
 					</ul>
 				</section>
 				<section>
 					<h2>benchmarks</h2>
+					<pre><code data-trim data-noescape>
+							#![feature(test)]
+							extern crate test;
+							use test::Bencher;
+							
+							fn fibonacci(n: u64) -> u64 {
+								match n {
+									0 => 1,
+									1 => 1,
+									n => fibonacci(n-1) + fibonacci(n-2),
+								}
+							}
+							
+							#[bench]
+							fn bench_fib(b: &amp;mut Bencher) {
+								b.iter(|| fibonacci(20));
+							}
+					</code></pre>
 					<ul>
-						<li><a href="" target="_blank">libtest benchmarks</a></li>
-						<li><a href="https://bheisler.github.io/post/benchmarking-with-criterion-rs/" target="_blank">with Criterion.rs</a></li>
+						<li><a href="" target="_blank">libtest benchmarks</a>
+							<pre><code data-trim data-noescape>
+								cargo +nightly bench
+							</code></pre>	
+						</li>
+						<li><a href="https://bheisler.github.io/post/benchmarking-with-criterion-rs/" target="_blank">with Criterion.rs</a>
+							<pre><code data-trim data-noescape>
+								cargo bench
+							</code></pre>	
+						</li>
 					</ul>
 				</section>
 				<section>
@@ -561,9 +609,9 @@
 					<h2>Autres crates utiles</h2>
 					<ul>
 						<li>http, mime : types pour les requêtes HTTP</li>
-						<li>futures, hyper, rayon, may : asynchrone & concurrence</li>
+						<li>futures, hyper, rayon, may : asynchrone &amp; concurrence</li>
 						<li>lazy_static : variable statique lazy</li>
-						<li>diesel, r2d2 : ORM & pool de connections</li>
+						<li>diesel, r2d2 : ORM &amp; pool de connections</li>
 						<li>serde, serde_derive, serde_json</li>
 						<li>itertools : helpers pour les iterators</li>
 						<li>reqwest : requêtes HTTP bloquantes</li>
@@ -812,7 +860,7 @@
 					<aside class="notes">est-ce mangeable? quels sont les saveurs, sucré, salé, épicé, amer ?</aside>
 				</section>
 				<section>
-					<h2>Reviews & Graphql</h2>
+					<h2>Reviews &amp; Graphql</h2>
 					<pre><code data-trim data-noescape class="sh">
 
 						curl http://127.0.0.1:9080/graphql -d '{"query":"{products{id,reviews{text,rating{stars}}}}"}'
