@@ -141,7 +141,7 @@
 				<section>
 					<h2>Dérivation automatique</h2>
 					<pre><code data-trim data-noescape class="rust">
-						#[derive(Debug, Display, Clone, Copy, Hash, PartialEq, Eq)]
+						#[derive(Debug, Clone)]
 						pub struct V2 {
 							pub x: f64,
 							pub y: f64,
@@ -149,6 +149,14 @@
 						println!("display v {}", v);
 						println!("debug v {:?}", v);
 						println!("debug pretty v {:#?}", v);
+					</code></pre>
+					<pre><code data-trim data-noescape class="rust">
+						display v V2 { x: 10, y: 11 }
+						debug v V2 { x: 10.0, y: 11.0 }
+						debug pretty v V2 {
+							x: 10.0,
+							y: 11.0
+						}
 					</code></pre>
 					<ul>
 						<li>une struct peut dériver un trait si tous ses composants le dérive déjà</li>
