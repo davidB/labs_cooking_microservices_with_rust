@@ -7,7 +7,7 @@ use futures::Future;
 use db;
 use models;
 
-#[derive(Debug, Serialize, GraphQLObject)]
+#[derive(Debug, Serialize)]
 pub struct Product {
     pub id: i32,
     pub reviews: Vec<Review>,
@@ -27,7 +27,7 @@ pub struct Rating {
     pub color: Color,
 }
 
-#[derive(Debug, Serialize, GraphQLObject)]
+#[derive(Debug, Serialize)]
 pub struct Review {
     pub reviewer: String,
     pub text: String,

@@ -1,5 +1,6 @@
 use std;
 use std::collections::HashMap;
+use std::sync::{Arc, RwLock};
 
 use futures::Future;
 
@@ -98,16 +99,7 @@ graphql_object!(QueryRoot: Context |&self| {
         let products = reviews.into_iter()
             .group_by(|review| review.product_id).into_iter()
             .map(|(product_id, reviews_of_product)| {
-                let ratings = reqwest::get(&format!(
-                    "{}/ratings/{}",
-                    ::CONFIG.ratings_url,
-                    product_id
-                )).and_then(|mut resp| resp.json())
-                    .map(|ratings: reviews::RatingsResponse| ratings.ratings.reviewers)
-                    .unwrap_or_else(|err| {
-                        error!("{:?}", err);
-                        HashMap::new()
-                    });
+                let ratings = HashMap::new();
                 reviews::Product {
                     id: product_id,
                     reviews: reviews::reviews_with_ratings(
@@ -125,4 +117,124 @@ pub type Schema = RootNode<'static, QueryRoot, EmptyMutation<Context>>;
 
 pub fn create_schema() -> Schema {
     Schema::new(QueryRoot {}, EmptyMutation::new())
+}
+
+pub struct RatingsContext {
+    product_id: i32,
+    ratings: Arc<RwLock<Option<HashMap<String, i32>>>>,
+}
+impl RatingsContext {
+    fn new(id: i32) -> Self {
+        Self {
+            product_id: id,
+            ratings: Arc::new(RwLock::new(None)),
+        }
+    }
+    fn fetch_ratings_if_needed(&self) -> () {
+        let mut ratings = self.ratings.write().unwrap();
+        if ratings.is_none() {
+            *ratings = Some(
+                reqwest::get(&format!(
+                    "{}/ratings/{}",
+                    ::CONFIG.ratings_url,
+                    self.product_id
+                )).and_then(|mut resp| resp.json())
+                    .map(|ratings: reviews::RatingsResponse| ratings.ratings.reviewers)
+                    .unwrap_or_else(|err| {
+                        error!("{:?}", err);
+                        HashMap::new()
+                    }),
+            );
+        }
+    }
+    fn rating_by(&self, reviewer: &str) -> Option<i32> {
+        self.fetch_ratings_if_needed();
+        let ratings = self.ratings.read().unwrap();
+        if let Some(ref ratings) = *ratings {
+            let v = ratings.get(reviewer);
+            if let Some(v) = v {
+                Some(*v)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+impl juniper::Context for RatingsContext {}
+
+impl juniper::GraphQLType for reviews::Product {
+    type Context = ();
+    type TypeInfo = ();
+
+    fn name(_: &()) -> Option<&str> {
+        Some("Product")
+    }
+
+    fn meta<'r>(_: &(), registry: &mut ::juniper::Registry<'r>) -> ::juniper::meta::MetaType<'r> {
+        let fields = &[
+            registry.field::<i32>("id", &()),
+            registry.field::<Vec<reviews::Review>>("reviews", &()),
+        ];
+        let builder = registry.build_object_type::<reviews::Product>(&(), fields);
+        builder.into_meta()
+    }
+
+    fn resolve_field(
+        &self,
+        _: &(),
+        field_name: &str,
+        _: &::juniper::Arguments,
+        executor: &::juniper::Executor<Self::Context>,
+    ) -> ::juniper::ExecutionResult {
+        let ratings_context = RatingsContext::new(self.id);
+        match field_name {
+            "id" => executor.resolve_with_ctx(&(), &self.id),
+            "reviews" => executor
+                .replaced_context(&ratings_context)
+                .resolve_with_ctx(&(), &self.reviews),
+            _ => panic!("Field {} not found on my type {}", field_name, "Product"),
+        }
+    }
+}
+
+impl juniper::GraphQLType for reviews::Review {
+    type Context = RatingsContext;
+    type TypeInfo = ();
+
+    fn name(_: &()) -> Option<&str> {
+        Some("Review")
+    }
+
+    fn meta<'r>(_: &(), registry: &mut ::juniper::Registry<'r>) -> ::juniper::meta::MetaType<'r> {
+        let fields = &[
+            registry.field::<String>("reviewer", &()),
+            registry.field::<String>("text", &()),
+            registry.field::<Option<reviews::Rating>>("rating", &()),
+        ];
+        let builder = registry.build_object_type::<reviews::Review>(&(), fields);
+        builder.into_meta()
+    }
+
+    fn resolve_field(
+        &self,
+        _: &(),
+        field_name: &str,
+        _: &::juniper::Arguments,
+        executor: &::juniper::Executor<Self::Context>,
+    ) -> ::juniper::ExecutionResult {
+        let context = executor.context();
+        match field_name {
+            "reviewer" => executor.resolve_with_ctx(&(), &self.reviewer),
+            "text" => executor.resolve_with_ctx(&(), &self.text),
+            "rating" => executor.resolve_with_ctx(
+                &(),
+                &context
+                    .rating_by(&self.reviewer)
+                    .map(|v| reviews::rating_nb_to_rating(&v)),
+            ),
+            _ => panic!("Field {} not found on my type {}", field_name, "Review"),
+        }
+    }
 }
