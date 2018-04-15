@@ -7,44 +7,44 @@ use futures::Future;
 use db;
 use models;
 
-#[derive(Debug, Serialize)]
-pub(crate) struct Product {
-    pub(crate) id: i32,
-    pub(crate) reviews: Vec<Review>,
+#[derive(Debug, Serialize, GraphQLObject)]
+pub struct Product {
+    pub id: i32,
+    pub reviews: Vec<Review>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, GraphQLEnum)]
 #[serde(rename_all = "lowercase")]
-pub(crate) enum Color {
+pub enum Color {
     Blue,
     Yellow,
     Red,
 }
 
-#[derive(Debug, Serialize)]
-pub(crate) struct Rating {
-    pub(crate) stars: i32,
-    pub(crate) color: Color,
+#[derive(Debug, Serialize, GraphQLObject)]
+pub struct Rating {
+    pub stars: i32,
+    pub color: Color,
 }
 
-#[derive(Debug, Serialize)]
-pub(crate) struct Review {
-    pub(crate) reviewer: String,
-    pub(crate) text: String,
+#[derive(Debug, Serialize, GraphQLObject)]
+pub struct Review {
+    pub reviewer: String,
+    pub text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rating: Option<Rating>,
+    pub rating: Option<Rating>,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct RatingsResponse {
+pub struct RatingsResponse {
     id: i32,
-    pub(crate) ratings: RatingsPerUser,
+    pub ratings: RatingsPerUser,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct RatingsPerUser {
+pub struct RatingsPerUser {
     #[serde(flatten)]
-    pub(crate) reviewers: HashMap<String, i32>,
+    pub reviewers: HashMap<String, i32>,
 }
 
 #[derive(Deserialize)]
@@ -52,7 +52,7 @@ pub struct ProductId {
     product_id: i32,
 }
 
-pub(crate) fn rating_nb_to_rating(rating: &i32) -> Rating {
+pub fn rating_nb_to_rating(rating: &i32) -> Rating {
     Rating {
         stars: *rating,
         color: match *rating {
@@ -63,7 +63,7 @@ pub(crate) fn rating_nb_to_rating(rating: &i32) -> Rating {
     }
 }
 
-pub(crate) fn reviews_with_ratings(
+pub fn reviews_with_ratings(
     reviews: Vec<models::Review>,
     ratings: HashMap<String, i32>,
 ) -> Vec<Review> {
@@ -81,7 +81,7 @@ pub(crate) fn reviews_with_ratings(
         .collect()
 }
 
-pub(crate) fn reviews(
+pub fn reviews(
     product_id: Path<ProductId>,
     state: State<super::AppState>,
 ) -> Box<Future<Item = HttpResponse, Error = error::Error>> {
@@ -127,13 +127,13 @@ pub(crate) fn reviews(
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub(crate) struct NewReview {
+pub struct NewReview {
     reviewer: String,
     text: String,
     rating: i32,
 }
 
-pub(crate) fn create_review(
+pub fn create_review(
     product_id: Path<ProductId>,
     review: Json<NewReview>,
     state: State<super::AppState>,
