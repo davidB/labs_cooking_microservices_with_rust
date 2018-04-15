@@ -1,5 +1,6 @@
 .git-branch {
     font-style: italic !important;
-    padding-left: 2em !important;
     font-weight: lighter !important;
+    color: #edaf1f;
+    font-size: smaller !important;
 }
