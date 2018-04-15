@@ -1,4 +1,4 @@
-# Service Ratings
+# ratings - 4 : tests
 
 * Les tests
   * Tests unitaires
