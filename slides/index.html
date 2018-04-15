@@ -710,19 +710,24 @@
 				<section>
 					<h2>Configuration</h2>
 					<ul>
-						<li>chargée de l'environment</li>
-						<li>chargée de la ligne de commande</li>
-						<li>lazy_static</li>
+						<li>chargée de l'environment : std::env</li>
+						<li>chargée de la ligne de commande
+							<ul>
+								<li><a href="https://github.com/kbknapp/clap-rs">clap-rs</a> : permet de tout configurer</li>
+								<li><a href="https://github.com/docopt/docopt.rs">docopt.rs</a> : génerer à partir de la doc usage</li>
+							</ul>
+						</li>
+						<li>struct Config disponible avec lazy_static</li>
 						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-config</span></li>
 					</ul>
 				</section>
 				<section>
 					<h2>Logs</h2>
 					<ul>
-						<li>log : fonctions de base</li>
-						<li>env_logger : configuration minimale, permet de choisir le niveau de log par variable d'environment</li>
-						<li>fern : beaucoup de configuration possible</li>
-						<li>slog : beaucoup de points d'extension possible</li>
+						<li><a href="https://docs.rs/log">log</a> : fonctions de base</li>
+						<li><a hreh="https://docs.rs/env_logger/*/env_logger/">env_logger</a> : configuration minimale, permet de choisir le niveau de log par variable d'environment</li>
+						<li><a href="https://docs.rs/fern/*/fern/">fern</a> : beaucoup de configuration possible</li>
+						<li><a href="https://docs.rs/slog/*/slog/">slog</a> : beaucoup de points d'extension possible (<a href="https://crates.io/search?q=slog">liste</a>)</li>
 						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-logs</span></li>
 					</ul>
 					TODO code (startup/shutdown)
@@ -744,6 +749,10 @@
 				<section>
 					<h2>HealthCheck/Liveness</h2>
 					<ul>
+						<li><a href="https://docs.rs/time/*/time/">time</a> pour avoir un timestamp</li>
+						<li><a href="https://docs.rs/chrono/*/chrono/">chrono</a> pour avoir une date formatée</li>
+						<li><a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates">env!</a> pour accèder à certaines des informations de build</li>
+						<li><a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html">script de build</a> pour le reste (git ref, date de build, ...)</li>
 						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-healthcheck</span></li>
 					</ul>
 					TODO code (version + now) + config (k8s)
