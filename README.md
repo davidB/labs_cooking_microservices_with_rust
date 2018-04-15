@@ -1,4 +1,4 @@
-# Service Ratings
+# ratings - 2 : serde
 
 * Utilisation de serde
   * Dérivation des traits `Serialize` / `Deserialize`
