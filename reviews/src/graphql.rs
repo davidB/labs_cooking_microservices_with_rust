@@ -1,4 +1,5 @@
 use std;
+use std::collections::HashMap;
 
 use futures::Future;
 
@@ -11,6 +12,9 @@ use juniper;
 use juniper::http::GraphQLRequest;
 use juniper::http::graphiql::graphiql_source;
 use juniper::EmptyMutation;
+
+use itertools::Itertools;
+use reqwest;
 
 use db;
 use reviews;
@@ -85,29 +89,33 @@ impl juniper::Context for Context {}
 
 graphql_object!(QueryRoot: Context |&self| {
     field products(&executor, id: Option<i32>) -> FieldResult<Vec<reviews::Product>> {
-        let products = vec![
-            reviews::Product {
-                id: 0,
-                reviews: vec![
-                    reviews::Review {
-                        reviewer: "Reviewer1".to_string(),
-                        text: "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!".to_string(),
-                        rating: Some(reviews::Rating {
-                            stars: 5,
-                            color: reviews::Color::Blue,
-                        }),
-                    },
-                    reviews::Review {
-                        reviewer: "Reviewer2".to_string(),
-                        text: "Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.".to_string(),
-                        rating: Some(reviews::Rating {
-                            stars: 4,
-                            color: reviews::Color::Blue,
-                        }),
-                    },
-                ]
-            }
-        ];
+        let context = executor.context();
+
+        let reviews = context.0.send(db::GetReviews {
+            product_id: id
+        }).wait().unwrap().unwrap();
+
+        let products = reviews.into_iter()
+            .group_by(|review| review.product_id).into_iter()
+            .map(|(product_id, reviews_of_product)| {
+                let ratings = reqwest::get(&format!(
+                    "{}/ratings/{}",
+                    ::CONFIG.ratings_url,
+                    product_id
+                )).and_then(|mut resp| resp.json())
+                    .map(|ratings: reviews::RatingsResponse| ratings.ratings.reviewers)
+                    .unwrap_or_else(|err| {
+                        error!("{:?}", err);
+                        HashMap::new()
+                    });
+                reviews::Product {
+                    id: product_id,
+                    reviews: reviews::reviews_with_ratings(
+                        reviews_of_product.collect(),
+                        ratings
+                    ),
+                }
+            }).collect();
 
         Ok(products)
     }

@@ -38,3 +38,5 @@ slog-envlogger = "2.1.0"
 slog-json = "2.2.0"
 
 juniper = "0.9"
+itertools = "0.7"
+reqwest = "0.8"

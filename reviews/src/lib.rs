@@ -19,8 +19,10 @@ extern crate time;
 #[macro_use]
 extern crate lazy_static;
 
+extern crate itertools;
 #[macro_use]
 extern crate juniper;
+extern crate reqwest;
 
 use actix_web::middleware::{cors, Logger};
 use actix_web::{http, server, App};
