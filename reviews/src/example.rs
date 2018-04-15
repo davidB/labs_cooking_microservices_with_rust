@@ -1,9 +1,7 @@
-use actix_web::{HttpResponse, Json, Path, Result};
+use actix_web::{AsyncResponder, FutureResponse, HttpResponse, Json, Result, State};
+use futures::future::Future;
 
-#[derive(Deserialize)]
-pub struct NamePathExtractor {
-    name: String,
-}
+use db;
 
 #[derive(Serialize)]
 struct Message {
@@ -11,11 +9,18 @@ struct Message {
     name: String,
 }
 
-pub fn say_hello_to_path(who: Path<NamePathExtractor>) -> Result<HttpResponse> {
-    Ok(HttpResponse::Ok().json(Message {
-        interjection: "Hello",
-        name: who.name.clone(),
-    }))
+pub fn say_hello(state: State<super::AppState>) -> FutureResponse<HttpResponse> {
+    state
+        .db
+        .send(db::GetName)
+        .from_err()
+        .and_then(|name| {
+            Ok(HttpResponse::Ok().json(Message {
+                interjection: "Hello",
+                name: name.unwrap_or_else(|_| "world".to_string()).clone(),
+            }))
+        })
+        .responder()
 }
 
 #[derive(Deserialize)]
@@ -24,9 +29,10 @@ pub struct Who {
     name: String,
 }
 
-pub fn say_hello_to_body(who: Json<Who>) -> Result<HttpResponse> {
-    Ok(HttpResponse::Ok().json(Message {
-        interjection: "Hello",
+pub fn save_name(who: Json<Who>, state: State<super::AppState>) -> Result<HttpResponse> {
+    state.db.do_send(db::SaveName {
         name: who.name.clone(),
-    }))
+    });
+
+    Ok(HttpResponse::Ok().finish())
 }

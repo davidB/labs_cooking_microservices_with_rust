@@ -9,7 +9,7 @@ pub struct Healthcheck {
     status: &'static str,
 }
 
-pub fn healthcheck(_: HttpRequest) -> HttpResponse {
+pub fn healthcheck(_: HttpRequest<super::AppState>) -> HttpResponse {
     HttpResponse::Ok().json(Healthcheck {
         now: time::now_utc().to_timespec().sec,
         version: env!("CARGO_PKG_VERSION"),
