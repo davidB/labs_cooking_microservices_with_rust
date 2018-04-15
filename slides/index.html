@@ -167,42 +167,56 @@
 					<h2>Générique</h2>
 					<pre><code data-trim data-noescape class="rust">
 					fn twice<T, U>(x: T) -> U
-					where T: Add&lt;Output=U>,
-						T: Copy
+					where
+						T: Add&lt;Output=U>,
+						T: Copy,
 					{
 						x + x
 					}
 
 					fn main() {
 						let one = V2 { x: 1, y: 1 };
-						
 						println!("{:?}", twice(one));
 					}
 					</code></pre>
 				</section>
 				<section>
 					<h2>Déclarer un trait</h2>
-					<div>
-						<ul>
-							<li>un trait définit une fonctionnalité</li>
-						</ul>
-						<pre><code data-trim data-noescape class="rust">
-						pub trait ToString {
-							fn to_string(&self) -> String;
-						}
-						</code></pre>
-					</div>
-					<div class="fragment">
-						<ul>
-							<li>un trait peut être générique sur ses paramètres / retours</li>
-						</ul>
-						<pre><code data-trim data-noescape class="rust">
-						pub trait Add<RHS = Self> {
-							type Output;
-							fn add(self, rhs: RHS) -> Self::Output;
-						}
-						</code></pre>
-					</div>
+					<ul>
+						<li class="fragment">un trait définit une fonctionnalité
+							<pre><code data-trim data-noescape class="rust">
+							pub trait ToString {
+								fn to_string(&amp;self) -> String;
+							}
+							</code></pre>
+						</li>
+						<li  class="fragment">un trait peut être générique sur ses paramètres / retours
+							<pre><code data-trim data-noescape class="rust">
+							pub trait Add<RHS = Self> {
+								type Output;
+								fn add(self, rhs: RHS) -> Self::Output;
+							}
+							</code></pre>
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Déclarer un trait</h2>
+					<ul>
+						<li>un trait peut avoir une implementation par defaut
+							<pre><code data-trim data-noescape class="rust">
+							pub trait To42 {
+								fn to_42(&amp;self) -> i32 { 
+									42
+								}
+							}
+
+							impl To42 for V2{}
+
+							println!("v.to_42 {}", v.to_42());
+							</code></pre>
+						</li>
+					</ul>
 				</section>
 				<section>
 					<h2>Implémenter un operateur</h2>
