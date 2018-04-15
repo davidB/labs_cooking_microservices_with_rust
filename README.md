@@ -1,10 +1,8 @@
 # Service Ratings
 
-* Les tests
-  * Tests unitaires
-  * Séparer le code en un binaire et une lib
-  * Tests d'intégration
-  * Tests de documentation
+* Configuration
+  * Peut se charger à partir de l'environment
+  * en lazy_static pour être accessible de partout
 
 * À faire:
-  * Ajouter des tests
+  * Jouer avec

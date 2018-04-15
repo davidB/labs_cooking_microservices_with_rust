@@ -12,6 +12,8 @@ use mime;
 
 use serde_json;
 
+use CONFIG;
+
 lazy_static! {
     static ref NAME: Arc<Mutex<String>> = { Arc::new(Mutex::new("world".to_string())) };
 }
@@ -64,7 +66,7 @@ fn save_who_to_say_hello_to(mut state: State) -> Box<HandlerFuture> {
 
 #[derive(Serialize)]
 struct Message {
-    interjection: &'static str,
+    interjection: String,
     name: String,
 }
 
@@ -85,7 +87,7 @@ impl IntoResponse for Message {
 
 fn say_hello_to(state: State) -> (State, Message) {
     let res = Message {
-        interjection: "Hello",
+        interjection: CONFIG.interjection.clone(),
         name: NAME.lock().unwrap().clone(),
     };
 

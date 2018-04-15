@@ -15,9 +15,14 @@ extern crate serde_json;
 extern crate lazy_static;
 
 pub mod example;
+mod config;
+
+lazy_static! {
+    static ref CONFIG: config::Config = config::Config::new();
+}
 
 pub fn start() {
-    let addr = "127.0.0.1:7878";
+    let addr = format!("{}:{}", CONFIG.host, CONFIG.port);
     println!("Listening for requests at http://{}", addr);
     gotham::start(addr, example::router())
 }
