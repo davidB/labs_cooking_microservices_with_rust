@@ -27,7 +27,7 @@ use diesel::r2d2::ConnectionManager;
 
 mod config;
 mod health;
-mod example;
+mod reviews;
 mod db;
 
 mod models;
@@ -57,12 +57,9 @@ pub fn run(addr: &str) {
             .resource("/health", |r| {
                 r.method(http::Method::GET).f(health::healthcheck)
             })
-            .resource("/hello/{id}", |r| {
-                r.method(http::Method::GET).with2(example::say_hello);
-                r.method(http::Method::POST).with3(example::save_name);
-            })
-            .resource("/random/{id}", |r| {
-                r.method(http::Method::GET).with2(example::say_random);
+            .resource("/reviews/{product_id}", |r| {
+                r.method(http::Method::GET).with2(reviews::reviews);
+                r.method(http::Method::POST).with3(reviews::create_review);
             })
     }).bind(addr)
         .unwrap()

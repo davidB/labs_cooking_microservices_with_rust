@@ -1,6 +1,7 @@
 table! {
-    hello (hello_id) {
-        hello_id -> Integer,
-        name -> Text,
+    reviews (product_id, reviewer) {
+        product_id -> Integer,
+        reviewer -> Text,
+        review -> Text,
     }
 }
