@@ -28,7 +28,9 @@ impl Handler<GetName> for DbExecutor {
 
         let conn: &SqliteConnection = &self.0.get().unwrap();
 
-        let item = hello.filter(hello_id.eq(msg.0)).first::<models::Hello>(conn)?;
+        let item = hello
+            .filter(hello_id.eq(msg.0))
+            .first::<models::Hello>(conn)?;
         Ok(item.name)
     }
 }
@@ -56,7 +58,7 @@ impl Handler<SaveName> for DbExecutor {
         diesel::insert_into(hello)
             .values(&models::Hello {
                 hello_id: msg.id,
-                name: msg.name
+                name: msg.name,
             })
             .execute(conn)?;
 

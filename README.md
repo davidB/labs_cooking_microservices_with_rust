@@ -1,19 +1,19 @@
-# reviews - 3 : diesel
+# reviews - 4 : futur
 
-* Connection à une base de données avec diesel
-  * Créer la DB avec diesel cli
-  * Table pour stocker un nom et un id
+* Appel à une API externe
+  * Appel à une API pour avoir un mot aléatoire
+  * Chaînage des futures pour utiliser cette requête plus le résultat en base de données
 
 ```
 curl http://localhost:9080/hello/1
 curl http://localhost:9080/hello/1 -H 'Content-Type: application/json' -X POST -d '{"say hello to": "Rust"}'
 curl http://localhost:9080/hello/1
+curl http://localhost:9080/random/1
 ```
 
 * À faire:
-  * Créer la migration pour les review
-  * Ajouter un type de message SaveReview
-  * Ajouter un type de message GetReviews
+  * Récupérer les ratings depuis le service ratings
+  * Sauvegarder une nouvelle note dans le service ratings
 
 ```
 curl http://localhost/reviews/5

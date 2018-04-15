@@ -61,6 +61,9 @@ pub fn run(addr: &str) {
                 r.method(http::Method::GET).with2(example::say_hello);
                 r.method(http::Method::POST).with3(example::save_name);
             })
+            .resource("/random/{id}", |r| {
+                r.method(http::Method::GET).with2(example::say_random);
+            })
     }).bind(addr)
         .unwrap()
         .start();
