@@ -840,15 +840,44 @@
 				<section>
 					<h2>Dockerfile</h2>
 					<p>see <a href="https://github.com/michiel/docker-rust-microservice" target="_blank">https://github.com/michiel/docker-rust-microservice</a></p>
-					<p><a href="https://alpinelinux.org/" target="_blank">Alpine Linux</a> uses <a href="https://www.musl-libc.org" target="_blank">musl-libc</a> instead of glibc, which is the default for most common distributions.</p>
-					<pre><code>rustup target add x86_64-unknown-linux-musl</code></pre>
-					<p>Once that is installed we can explicitly target it when building the service,</p>
-					<pre><code>cargo build --target x86_64-unknown-linux-musl --release</code></pre>
-					TODO the code
+					<pre><code data-trim data-noescape class="sh">
+						rustup target add x86_64-unknown-linux-musl
+						cargo build --target x86_64-unknown-linux-musl --release
+					</code></pre>
 				</section>
 				<section>
 					<h2>Dockerfile multi-stage</h2>
-					TODO
+					<pre><code data-trim data-noescape class="docker" style="max-height: 22em">
+						# from https://blog.sedrik.se/posts/my-docker-setup-for-rust/
+						FROM ekidd/rust-musl-builder as builder
+
+						WORKDIR /home/rust/
+
+						# Avoid having to install/build all dependencies by copying
+						# the Cargo files and making a dummy src/main.rs
+						COPY Cargo.toml .
+						COPY Cargo.lock .
+						RUN echo "fn main() {}" > src/main.rs
+						RUN cargo test
+						RUN cargo build --release
+
+						# We need to touch our real main.rs file or else docker will use
+						# the cached one.
+						COPY . .
+						RUN sudo touch src/main.rs
+
+						RUN cargo test
+						RUN cargo build --release
+
+						# Size optimization &amp; rename to main
+						RUN strip target/x86_64-unknown-linux-musl/release/srv01 -o target/x86_64-unknown-linux-musl/release/main
+
+						# Start building the final image
+						FROM scratch
+						WORKDIR /home/rust/
+						COPY --from=builder /home/rust/target/x86_64-unknown-linux-musl/release/main .
+						ENTRYPOINT ["./main"]
+					</code></pre>
 				</section>
 				<section>
 					<h2>Deployement</h2>
