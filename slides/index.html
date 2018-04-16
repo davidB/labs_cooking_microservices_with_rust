@@ -38,6 +38,12 @@
 		dl, ul, ol {
 			width:100%;
 		}
+		.columns {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			align-content: stretch;
+		}
 	</style>
 </head>
 
@@ -50,14 +56,19 @@
 						<br>
 						<img src="images/rust.svg" style="background:none;box-shadow:none;" />
 					</h1>
-					<p>
+					<div class="columns">
+						<div>
 						David Bernard
 						<a href="https://github.com/davidB" target="_blank">
 							<i class="fab fa-github"></i> davidB</a>
 						<br /> François Mockers
 						<a href="https://github.com/mockersf" target="_blank">
 							<i class="fab fa-github"></i> mockersf</a>
-					</p>
+						</div>
+						<div>
+							<img src="images/Samsung_Logo.svg" style="background:none;box-shadow:none;width:6em;" />
+						</div>
+					</div>
 				</section>
 				<section>
 					<blockquote>
@@ -487,8 +498,7 @@
 					<h2>cargo</h2>
 					<pre><code data-trim data-noescape class="sh">~/.cargo/bin</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install ripgrep https</code></pre>
-					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install cargo-watch</code></pre>
-					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install cargo-make</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install cargo-watch cargo-make</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">cargo install --list</code></pre>
 				</section>
 				<section>
@@ -574,7 +584,7 @@
 						<li>protocol: http, gRPC, tower</li>
 						<li>web: hyper, reqwest, ...</li>
 						<li>concurrent: thread, rayon, futures/tokio, may, simd</li>
-						<li>db client: diesel, postgres, mongodb, dgraph, ...</li>
+						<li>db client: diesel, r2d2, postgres, mongodb, dgraph, ...</li>
 						<li>os: (<a href="https://www.redox-os.org/">redox-os</a>)</li>
 					</ul>
 					<aside class="notes">bcq version 0.x</aside>
@@ -587,6 +597,12 @@
 				<section data-state="flash" align="center">
 					<h1>Préparation</h1>
 					<aside class="notes">assemblage de libs et de code pour faire un service avec une api web (http + graphql)</aside>
+				</section>
+				<section>
+					<h2>code</h2>
+					<pre><code data-trim data-noescape class="sh">
+						git clone https://github.com/davidB/labs_cooking_microservices_with_rust
+					</code></pre>
 				</section>
 				<section>
 					<h2>Serveur HTTP</h2>
