@@ -537,24 +537,6 @@
 				</section>
 				<section>
 					<h2>benchmarks</h2>
-					<pre><code data-trim data-noescape>
-							#![feature(test)]
-							extern crate test;
-							use test::Bencher;
-							
-							fn fibonacci(n: u64) -> u64 {
-								match n {
-									0 => 1,
-									1 => 1,
-									n => fibonacci(n-1) + fibonacci(n-2),
-								}
-							}
-							
-							#[bench]
-							fn bench_fib(b: &amp;mut Bencher) {
-								b.iter(|| fibonacci(20));
-							}
-					</code></pre>
 					<ul>
 						<li><a href="" target="_blank">libtest benchmarks</a>
 							<pre><code data-trim data-noescape>
@@ -564,6 +546,19 @@
 						<li><a href="https://bheisler.github.io/post/benchmarking-with-criterion-rs/" target="_blank">with Criterion.rs</a>
 							<pre><code data-trim data-noescape>
 								cargo bench
+
+								Running target/release/deps/bench1-0a8dde0ccacc35ee
+								fib 20                  time:   [25.800 us 26.114 us 26.453 us]
+								Found 3 outliers among 100 measurements (3.00%)
+								  1 (1.00%) high mild
+								  2 (2.00%) high severe
+
+								Running target/release/deps/bench1-0a8dde0ccacc35ee
+								fib 20                  time:   [25.662 us 25.993 us 26.302 us]
+								                        change: [-5.4472% -3.3608% -1.1502%] (p = 0.00 < 0.05)
+								                        Performance has improved.
+								Found 5 outliers among 100 measurements (5.00%)
+								  5 (5.00%) high mild
 							</code></pre>	
 						</li>
 					</ul>
