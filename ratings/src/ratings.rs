@@ -20,12 +20,6 @@ pub struct ProductIdPathExtractor {
 #[derive(Debug, Serialize)]
 pub struct RatingsResponse {
     id: u32,
-    ratings: RatingsPerUser,
-}
-
-#[derive(Debug, Serialize)]
-pub struct RatingsPerUser {
-    #[serde(flatten)]
     ratings: HashMap<String, u8>,
 }
 
@@ -57,7 +51,7 @@ pub fn ratings(state: State) -> (State, RatingsResponse) {
             .collect();
         RatingsResponse {
             id: product.product_id,
-            ratings: RatingsPerUser { ratings },
+            ratings: ratings,
         }
     };
 
