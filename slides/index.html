@@ -390,7 +390,7 @@
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup show</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup update</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="sh">rustup component add rustfmt-preview</code></pre>
-					<pre class="fragment"><code data-trim data-noescape class="sh">rustup component add rls-preview</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="sh">rustup component add rls-preview rust-src rust-analysis</code></pre>
 					<aside class="notes">
 						* check on Windows
 					</aside>
@@ -740,9 +740,11 @@
 						<li><a href="https://docs.rs/slog/*/slog/">slog</a> : beaucoup de points d'extension possible (<a href="https://crates.io/search?q=slog">liste</a>)</li>
 						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-logs</span></li>
 					</ul>
-					TODO code (startup/shutdown)
-					TODO endpoint log
-					TODO metrics capture
+					<aside class="notes">
+						TODO code (startup/shutdown)
+						TODO endpoint log
+						TODO metrics capture
+					</aside>
 				</section>
 				<section>
 					<h2>(Custom) Metrics</h2>
@@ -765,7 +767,6 @@
 						<li><a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html">script de build</a> pour le reste (git ref, date de build, ...)</li>
 						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-healthcheck</span></li>
 					</ul>
-					TODO code (version + now) + config (k8s)
 				</section>
 				<section>
 					<h2>Readiness</h2>
@@ -906,6 +907,14 @@
 						WORKDIR /home/rust/
 						COPY --from=builder /home/rust/target/x86_64-unknown-linux-musl/release/main .
 						ENTRYPOINT ["./main"]
+					</code></pre>
+				</section>
+				<section>
+					<h2>Docker</h2>
+					<pre><code data-trim data-noescape class="sh">
+						docker build -t ratings:v10 .
+						docker run -p 9080:9080 -e "RUST_LOG=info" --rm --name ratings ratings:v10
+						docker stop ratings
 					</code></pre>
 				</section>
 				<section>
