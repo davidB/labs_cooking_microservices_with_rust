@@ -38,13 +38,7 @@ pub(crate) struct Review {
 #[derive(Debug, Deserialize)]
 pub(crate) struct RatingsResponse {
     id: i32,
-    pub(crate) ratings: RatingsPerUser,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct RatingsPerUser {
-    #[serde(flatten)]
-    pub(crate) reviewers: HashMap<String, i32>,
+    pub(crate) ratings: HashMap<String, i32>,
 }
 
 #[derive(Deserialize)]
@@ -95,7 +89,7 @@ pub(crate) fn reviews(
         .and_then(move |resp| {
             resp.json()
                 .from_err()
-                .and_then(|ratings: RatingsResponse| Ok(ratings.ratings.reviewers))
+                .and_then(|ratings: RatingsResponse| Ok(ratings.ratings))
         })
         .or_else(|err| {
             // in case of error, log it and continue with an empty list of ratings
