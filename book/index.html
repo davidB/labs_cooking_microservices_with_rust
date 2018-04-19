@@ -147,9 +147,6 @@
                 <div id="content" class="content">
                     <main>
                         <a class="header" href="setup.html#préparation" id="préparation"><h1>Préparation</h1></a>
-<a class="header" href="setup.html#branche-git" id="branche-git"><h2>Branche git</h2></a>
-<pre><code class="language-bash">git checkout reviews-todo
-</code></pre>
 <a class="header" href="setup.html#avoir-le-hands-on-en-local" id="avoir-le-hands-on-en-local"><h2>Avoir le hands on en local</h2></a>
 <pre><code class="language-bash">cargo install mdbook
 mdbook serve
@@ -210,21 +207,6 @@ RUST_LOG=warn RATINGS_URL=http://127.0.0.1:7878 cargo watch --ignore db.sqlite -
             }
         </script>
 
-        
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
         
