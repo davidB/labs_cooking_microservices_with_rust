@@ -19,3 +19,5 @@ Car un langage n'est pas qu'une syntaxe et un compilateur, mais aussi ce qu'il y
 Les instructions pour préparer la session seront disponibles sur [github](https://github.com/davidB/labs_cooking_microservices_with_rust/) au moins une semaine avant le début du lab.
 
 [slides](https://davidb.github.io/labs_cooking_microservices_with_rust/slides/#/)
+
+[pratices](https://davidb.github.io/labs_cooking_microservices_with_rust/book/)
