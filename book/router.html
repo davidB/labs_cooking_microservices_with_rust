@@ -150,38 +150,30 @@
                         <a class="header" href="router.html#router-les-requêtes" id="router-les-requêtes"><h1>Router les requêtes</h1></a>
 <a class="header" href="router.html#définir-les-méthodes-retournant-une-réponse" id="définir-les-méthodes-retournant-une-réponse"><h2>Définir les méthodes retournant une réponse</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><code>use std::collections::HashMap;
+<pre><code class="language-rust no_run ignore">use std::collections::HashMap;
 
 use actix_web::{error, AsyncResponder, HttpResponse, Json, Path, State};
 use futures::Future;
 use futures;
 </code></pre>
 <a class="header" href="router.html#définir-comment-extraire-le-product_id-du-path" id="définir-comment-extraire-le-product_id-du-path"><h3>Définir comment extraire le product_id du path</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Deserialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Deserialize)]
 pub struct ProductId {
     product_id: i32,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="router.html#get-des-reviews" id="get-des-reviews"><h3>GET des reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn reviews(
+<pre><code class="language-rust no_run ignore">pub fn reviews(
     product_id: Path&lt;ProductId&gt;,
     state: State&lt;super::AppState&gt;,
 ) -&gt; Box&lt;Future&lt;Item = HttpResponse, Error = error::Error&gt;&gt; {
     let product_id = product_id.product_id;
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+
+    unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="router.html#post-dune-review" id="post-dune-review"><h3>POST d'une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize, Serialize)]
 pub struct NewReview {}
 
 pub fn create_review(
@@ -191,22 +183,16 @@ pub fn create_review(
 ) -&gt; Box&lt;Future&lt;Item = HttpResponse, Error = error::Error&gt;&gt; {
     let product_id = product_id.product_id;
 
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+    unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="router.html#définir-les-routes" id="définir-les-routes"><h2>Définir les routes</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::http;
+<pre><code class="language-rust no_run ignore">use actix_web::http;
 
 mod reviews;
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-server::new(move || {
+</code></pre>
+<pre><code class="language-rust no_run ignore">server::new(move || {
     App::with_state(AppState {
     }).middleware(Logger::default())
         .resource(&quot;/reviews/{product_id}&quot;, |r| {
@@ -216,7 +202,14 @@ server::new(move || {
 }).bind(addr)
     .unwrap()
     .start();
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="router.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Les routes définies ne répondent pas, et un log apparaît quand on les appelle</p>
+<pre><code class="language-bash">curl localhost:9080/reviews/0 -i
+curl: (52) Empty reply from server
+</code></pre>
+<pre><code>thread 'arbiter:&quot;85373381-235b-47af-bde8-4d85e5b778d8&quot;:&quot;actor&quot;' panicked at 'not yet implemented', src/reviews.rs:18:5
+</code></pre>
 
                     </main>
 
@@ -267,6 +260,21 @@ server::new(move || {
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

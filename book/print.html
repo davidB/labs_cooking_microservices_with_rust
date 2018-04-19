@@ -149,37 +149,30 @@
                     <main>
                         <a class="header" href="print.html#préparation" id="préparation"><h1>Préparation</h1></a>
 <a class="header" href="print.html#branche-git" id="branche-git"><h2>Branche git</h2></a>
-<pre><code>git checkout reviews-todo
+<pre><code class="language-bash">git checkout reviews-todo
 </code></pre>
 <a class="header" href="print.html#avoir-le-hands-on-en-local" id="avoir-le-hands-on-en-local"><h2>Avoir le hands on en local</h2></a>
-<pre><code>cargo install mdbook
+<pre><code class="language-bash">cargo install mdbook
 mdbook serve
 </code></pre>
 <a class="header" href="print.html#lancer-le-service-ratings" id="lancer-le-service-ratings"><h2>Lancer le service ratings</h2></a>
-<pre><code>PORT=7878 RUST_LOG=info cargo run -p ratings
+<pre><code class="language-bash">cd ratings
+PORT=7878 RUST_LOG=info cargo run
 </code></pre>
 <p>Vérifier qu'il marche:</p>
-<pre><code>curl localhost:7878/ratings/0
+<pre><code class="language-bash">curl localhost:7878/ratings/0
 curl localhost:7878/ratings/0 -d '{&quot;reviewer&quot;:&quot;me&quot;,&quot;rating&quot;:3}'
 curl localhost:7878/ratings/0
 </code></pre>
-<a class="header" href="print.html#initialiser-la-base-de-données" id="initialiser-la-base-de-données"><h2>Initialiser la base de données</h2></a>
-<pre><code>cargo install diesel_cli
-cd reviews
-DATABASE_URL=db.sqlite diesel migration run
-</code></pre>
 <a class="header" href="print.html#lancer-le-service-avec-rebuild-automatique" id="lancer-le-service-avec-rebuild-automatique"><h2>Lancer le service avec rebuild automatique</h2></a>
-<pre><code>cargo install cargo-watch
+<pre><code class="language-bash">cargo install cargo-watch
 cd reviews
-RATINGS_URL=http://127.0.0.1:7878 cargo watch -x 'run'
+RUST_LOG=warn RATINGS_URL=http://127.0.0.1:7878 cargo watch --ignore db.sqlite -x 'run'
 </code></pre>
 <a class="header" href="print.html#serveur-http" id="serveur-http"><h1>Serveur HTTP</h1></a>
 <a class="header" href="print.html#démarrer-une-application-et-un-système-dacteur" id="démarrer-une-application-et-un-système-dacteur"><h2>Démarrer une application et un système d'acteur</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-extern crate actix;
+<pre><code class="language-rust no_run ignore">extern crate actix;
 extern crate actix_web;
 extern crate futures;
 
@@ -192,11 +185,9 @@ use actix_web::{server, App};
 
 pub struct AppState {
 }
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let sys = actix::System::new(&quot;reviews&quot;);
+</code></pre>
+<p>Dans la fonction <code>run</code></p>
+<pre><code class="language-rust no_run ignore">let sys = actix::System::new(&quot;reviews&quot;);
 
 server::new(move || {
     App::with_state(AppState {
@@ -206,42 +197,41 @@ server::new(move || {
     .start();
 
 let _ = sys.run();
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="print.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Un serveur http qui écoute, mais ne répond que des 404</p>
+<pre><code class="language-bash">curl localhost:9080 -i
+HTTP/1.1 404 Not Found
+content-length: 0
+date: Thu, 19 Apr 2018 21:36:42 GMT
+</code></pre>
 <a class="header" href="print.html#router-les-requêtes" id="router-les-requêtes"><h1>Router les requêtes</h1></a>
 <a class="header" href="print.html#définir-les-méthodes-retournant-une-réponse" id="définir-les-méthodes-retournant-une-réponse"><h2>Définir les méthodes retournant une réponse</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><code>use std::collections::HashMap;
+<pre><code class="language-rust no_run ignore">use std::collections::HashMap;
 
 use actix_web::{error, AsyncResponder, HttpResponse, Json, Path, State};
 use futures::Future;
 use futures;
 </code></pre>
 <a class="header" href="print.html#définir-comment-extraire-le-product_id-du-path" id="définir-comment-extraire-le-product_id-du-path"><h3>Définir comment extraire le product_id du path</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Deserialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Deserialize)]
 pub struct ProductId {
     product_id: i32,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#get-des-reviews" id="get-des-reviews"><h3>GET des reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn reviews(
+<pre><code class="language-rust no_run ignore">pub fn reviews(
     product_id: Path&lt;ProductId&gt;,
     state: State&lt;super::AppState&gt;,
 ) -&gt; Box&lt;Future&lt;Item = HttpResponse, Error = error::Error&gt;&gt; {
     let product_id = product_id.product_id;
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+
+    unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#post-dune-review" id="post-dune-review"><h3>POST d'une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize, Serialize)]
 pub struct NewReview {}
 
 pub fn create_review(
@@ -251,22 +241,16 @@ pub fn create_review(
 ) -&gt; Box&lt;Future&lt;Item = HttpResponse, Error = error::Error&gt;&gt; {
     let product_id = product_id.product_id;
 
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+    unimplemented!()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#définir-les-routes" id="définir-les-routes"><h2>Définir les routes</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::http;
+<pre><code class="language-rust no_run ignore">use actix_web::http;
 
 mod reviews;
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-server::new(move || {
+</code></pre>
+<pre><code class="language-rust no_run ignore">server::new(move || {
     App::with_state(AppState {
     }).middleware(Logger::default())
         .resource(&quot;/reviews/{product_id}&quot;, |r| {
@@ -276,38 +260,33 @@ server::new(move || {
 }).bind(addr)
     .unwrap()
     .start();
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="print.html#résultat-1" id="résultat-1"><h2>Résultat</h2></a>
+<p>Les routes définies ne répondent pas, et un log apparaît quand on les appelle</p>
+<pre><code class="language-bash">curl localhost:9080/reviews/0 -i
+curl: (52) Empty reply from server
+</code></pre>
+<pre><code>thread 'arbiter:&quot;85373381-235b-47af-bde8-4d85e5b778d8&quot;:&quot;actor&quot;' panicked at 'not yet implemented', src/reviews.rs:18:5
+</code></pre>
 <a class="header" href="print.html#renvoyer-des-données" id="renvoyer-des-données"><h1>Renvoyer des données</h1></a>
 <a class="header" href="print.html#définir-le-modèle" id="définir-le-modèle"><h2>Définir le modèle</h2></a>
 <p>Dans <code>models.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Serialize, Debug)]
+<pre><code class="language-rust no_run ignore">#[derive(Serialize, Debug)]
 pub struct Review {
     pub product_id: i32,
     pub reviewer: String,
     pub review: String,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod models;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">mod models;
+</code></pre>
 <a class="header" href="print.html#traduire-avec-les-entrées--sorties" id="traduire-avec-les-entrées--sorties"><h2>Traduire avec les entrées / sorties</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use models;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">use models;
+</code></pre>
 <a class="header" href="print.html#définir-la-structure-json-de-sortie" id="définir-la-structure-json-de-sortie"><h3>Définir la structure JSON de sortie</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Serialize)]
 pub struct Product {
     pub id: i32,
     pub reviews: Vec&lt;Review&gt;,
@@ -334,15 +313,12 @@ pub enum Color {
     Yellow,
     Red,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#convertir-le-modèle-en-sortie" id="convertir-le-modèle-en-sortie"><h3>Convertir le modèle en sortie</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn rating_nb_to_rating(rating: &amp;i32) -&gt; Rating {
+<pre><code class="language-rust no_run ignore">pub fn rating_nb_to_rating(rating: i32) -&gt; Rating {
     Rating {
-        stars: *rating,
-        color: match *rating {
+        stars: rating,
+        color: match rating {
             1 =&gt; Color::Red,
             2 | 3 =&gt; Color::Yellow,
             _ =&gt; Color::Blue,
@@ -359,91 +335,93 @@ pub fn reviews_with_ratings(
         .map(|review| {
             let reviewer = review.reviewer.clone();
             Review {
-                rating: ratings.get(&amp;reviewer).map(rating_nb_to_rating),
+                rating: ratings.get(&amp;reviewer).map(|&amp;r| rating_nb_to_rating(r)),
                 reviewer: reviewer,
                 text: review.review.clone(),
             }
         })
         .collect()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#renvoyer-la-réponse" id="renvoyer-la-réponse"><h3>Renvoyer la réponse</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let ratings = HashMap::new();
-futures::future::ok(Ok(vec![]))
-    .and_then(move |mut reviews: Result&lt;Vec&lt;models::Review&gt;, ()&gt;| {
-        if reviews.is_err() {
-            error!(&quot;{:?}&quot;, reviews);
-            reviews = Ok(vec![]);
-        }
+<pre><code class="language-rust no_run ignore">let ratings = HashMap::new();
+let reviews = vec![];
+
+let build_response_from_ratings = move |ratings| {
+    futures::future::result({
         // build the response
         let product = Product {
             id: product_id,
-            reviews: reviews_with_ratings(reviews.unwrap(), ratings),
+            reviews: reviews_with_ratings(reviews, ratings),
         };
         // return a 200 response with the reviews as json
         Ok(HttpResponse::Ok().json(product))
     })
-    .responder()
-#}</code></pre></pre>
+};
+
+build_response_from_ratings(ratings).responder()
+</code></pre>
 <a class="header" href="print.html#définir-la-structure-json-en-entrée" id="définir-la-structure-json-en-entrée"><h3>Définir la structure JSON en entrée</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct NewReview {
     reviewer: String,
     text: String,
     rating: i32,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#convertir-lentrée-en-modèle" id="convertir-lentrée-en-modèle"><h3>Convertir l'entrée en modèle</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let review_to_save = models::Review {
+<pre><code class="language-rust no_run ignore">let review_to_save = models::Review {
     product_id: product_id as i32,
     reviewer: review.reviewer.clone(),
     review: review.text.clone(),
 };
 
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#renvoyer-la-réponse-1" id="renvoyer-la-réponse-1"><h3>Renvoyer la réponse</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-futures::future::ok(Ok(NewReview {
-    reviewer: review.reviewer.clone(),
-    text: review.text.clone(),
-    rating: review.rating,
-}))
-    .and_then(|res: Result&lt;NewReview, ()&gt;| match res {
-        Ok(review) =&gt; Ok(HttpResponse::Ok().json(review)),
-        Err(_) =&gt; Ok(HttpResponse::InternalServerError().into()),
-    })
-    .responder()
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">futures::future::result({
+    Ok(HttpResponse::Ok().json(review.clone()))
+}).responder()
+</code></pre>
+<a class="header" href="print.html#résultat-2" id="résultat-2"><h2>Résultat</h2></a>
+<p>Récupérer les reviews d'un product donne une liste vide</p>
+<pre><code>curl localhost:9080/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 21
+content-type: application/json
+date: Thu, 19 Apr 2018 21:59:21 GMT
+
+{&quot;id&quot;:0,&quot;reviews&quot;:[]}
+</code></pre>
+<p>Poster une review la renvoie telle quelle</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+HTTP/1.1 200 OK
+content-length: 47
+content-type: application/json
+date: Thu, 19 Apr 2018 22:00:57 GMT
+
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+</code></pre>
+<p>Poster un JSON invalide répond une erreur 400 et un message dans les logs</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3}'
+HTTP/1.1 400 Bad Request
+content-length: 0
+date: Thu, 19 Apr 2018 22:01:54 GMT
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;Error occured during request handling: Json deserialize error: missing field `text` at line 1 column 29&quot;,&quot;level&quot;:&quot;WARN&quot;,&quot;ts&quot;:&quot;2018-04-20T00:01:55.287447+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 <a class="header" href="print.html#acteur-db" id="acteur-db"><h1>Acteur DB</h1></a>
 <a class="header" href="print.html#définir-lacteur" id="définir-lacteur"><h2>Définir l'acteur</h2></a>
 <p>Dans <code>db.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix::prelude::*;
+<pre><code class="language-rust no_run ignore">use actix::prelude::*;
 
 pub struct DbExecutor();
 
 impl Actor for DbExecutor {
     type Context = SyncContext&lt;Self&gt;;
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#définir-le-message-getreviews" id="définir-le-message-getreviews"><h3>Définir le message <code>GetReviews</code></h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use models;
+<pre><code class="language-rust no_run ignore">use models;
 
 #[derive(Debug)]
 pub struct GetReviews {
@@ -458,7 +436,7 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
     type Result = Result&lt;Vec&lt;models::Review&gt;, ()&gt;;
 
     fn handle(&amp;mut self, msg: GetReviews, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;getting reviews for product {}&quot;, msg.product_id);
+        warn!(&quot;getting reviews for product {}&quot;, msg.product_id);
 
         Ok(vec![
             models::Review {
@@ -469,12 +447,9 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
         ])
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#définir-le-message-savereview" id="définir-le-message-savereview"><h3>Définir le message <code>SaveReview</code></h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,
 }
@@ -487,73 +462,93 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
     type Result = Result&lt;models::Review, ()&gt;;
 
     fn handle(&amp;mut self, msg: SaveReview, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;saving review {:?}&quot;, msg.review);
+        warn!(&quot;saving review {:?}&quot;, msg.review);
 
         Ok(msg.review)
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#ajouter-lacteur-à-lappstate" id="ajouter-lacteur-à-lappstate"><h2>Ajouter l'acteur à l'<code>AppState</code></h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix::prelude::*;
+<pre><code class="language-rust no_run ignore">use actix::prelude::*;
 
 mod db;
 
 pub struct AppState {
     db: Addr&lt;Syn, db::DbExecutor&gt;,
 }
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let db_addr = SyncArbiter::start(3, move || db::DbExecutor());
+</code></pre>
+<pre><code class="language-rust no_run ignore">let db_addr = SyncArbiter::start(3, move || db::DbExecutor());
 
 server::new(move || {
     App::with_state(AppState {
         db: db_addr.clone(),
     }).middleware(Logger::default())
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#appeller-lacteur-pendant-les-requêtes" id="appeller-lacteur-pendant-les-requêtes"><h2>Appeller l'acteur pendant les requêtes</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use db;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">use db;
+</code></pre>
 <a class="header" href="print.html#get-des-reviews-1" id="get-des-reviews-1"><h3>Get des reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-state
+<p>Enlever</p>
+<pre><code class="language-rust no_run ignore">let reviews = vec![];
+</code></pre>
+<p>Et remplacer</p>
+<pre><code class="language-rust no_run ignore">futures::future::result({
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">state
     .db
     .send(db::GetReviews {
         product_id: product_id,
     })
-    .and_then(move |mut reviews| {
-        ...
-#}</code></pre></pre>
+    .map(|result| match result {
+        Ok(reviews) =&gt; reviews,
+        Err(err) =&gt; {
+            error!(&quot;{:?}&quot;, err);
+            vec![]
+        }
+    })
+    .from_err()
+    .and_then(move |reviews| {
+</code></pre>
 <a class="header" href="print.html#save-dune-review" id="save-dune-review"><h3>Save d'une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-state
+<p>Remplacer</p>
+<pre><code class="language-rust no_run ignore">futures::future::result({ Ok(HttpResponse::Ok().json(review.clone())) }).responder()
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">state
     .db
     .send(db::SaveReview {
         review: review_to_save,
     })
     .from_err()
-    .and_then(|res| match res {
-        ...
-#}</code></pre></pre>
+    .and_then(move |_| { Ok(HttpResponse::Ok().json(review.clone())) }).responder()
+</code></pre>
+<a class="header" href="print.html#résultat-3" id="résultat-3"><h2>Résultat</h2></a>
+<p>Notre avis s'affiche !</p>
+<pre><code>curl localhost:9080/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 57
+content-type: application/json
+date: Thu, 19 Apr 2018 22:13:43 GMT
+
+{&quot;id&quot;:0,&quot;reviews&quot;:[{&quot;reviewer&quot;:&quot;user1&quot;,&quot;text&quot;:&quot;great!&quot;}]}
+</code></pre>
+<p>À la sauvegarde d'un avis, un log s'affiche:</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+HTTP/1.1 200 OK
+content-length: 47
+content-type: application/json
+date: Thu, 19 Apr 2018 22:23:06 GMT
+
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;saving review Review { product_id: 0, reviewer: \&quot;moi\&quot;, review: \&quot;mon avis\&quot; }&quot;,&quot;level&quot;:&quot;WARN&quot;,&quot;ts&quot;:&quot;2018-04-20T00:23:06.973686+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 <a class="header" href="print.html#configuration" id="configuration"><h1>Configuration</h1></a>
 <a class="header" href="print.html#module-configrs" id="module-configrs"><h2>module <code>config.rs</code></h2></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use std::env;
+<pre><code class="language-rust no_run ignore">use std::env;
 
 #[derive(Debug)]
 pub struct Config {
@@ -567,30 +562,25 @@ impl Config {
     pub fn new() -&gt; Self {
         Self {
             host: env::var(&quot;HOST&quot;).unwrap_or_else(|_| &quot;0.0.0.0&quot;.to_string()),
-            port: env::var(&quot;PORT&quot;).unwrap_or_else(|_| &quot;9080&quot;.to_string()),
+            port: env::var(&quot;PORT&quot;).unwrap_or_else(|_| &quot;9081&quot;.to_string()),
             database_url: env::var(&quot;DATABASE_URL&quot;).unwrap_or_else(|_| &quot;db.sqlite&quot;.to_string()),
             ratings_url: env::var(&quot;RATINGS_URL&quot;)
                 .unwrap_or_else(|_| &quot;http://ratings:9080&quot;.to_string()),
         }
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#ecouter-sur-ladresse-de-la-configuration" id="ecouter-sur-ladresse-de-la-configuration"><h2>Ecouter sur l'adresse de la configuration</h2></a>
 <p>Dans <code>bin.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod config;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">mod config;
+</code></pre>
+<p>Remplacer l'assignation existante d'<code>addr</code> par:</p>
 <pre><code>let config = config::Config::new();
 let addr = format!(&quot;{}:{}&quot;, config.host, config.port);
 </code></pre>
 <a class="header" href="print.html#rendre-la-configuration-accessible" id="rendre-la-configuration-accessible"><h2>Rendre la configuration accessible</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[macro_use]
+<pre><code class="language-rust no_run ignore">#[macro_use]
 extern crate lazy_static;
 
 mod config;
@@ -598,34 +588,34 @@ mod config;
 lazy_static! {
     static ref CONFIG: config::Config = config::Config::new();
 }
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="print.html#résultat-4" id="résultat-4"><h2>Résultat</h2></a>
+<p>Notre service écoute maintenant sur le port 9081</p>
+<pre><code>curl localhost:9081/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 57
+content-type: application/json
+date: Thu, 19 Apr 2018 22:27:26 GMT
+
+{&quot;id&quot;:0,&quot;reviews&quot;:[{&quot;reviewer&quot;:&quot;user1&quot;,&quot;text&quot;:&quot;great!&quot;}]}
+</code></pre>
 <a class="header" href="print.html#utilisation-de-diesel" id="utilisation-de-diesel"><h1>Utilisation de diesel</h1></a>
 <a class="header" href="print.html#nouvelles-dépendances" id="nouvelles-dépendances"><h2>Nouvelles dépendances</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[macro_use]
+<pre><code class="language-rust no_run ignore">#[macro_use]
 extern crate diesel;
 extern crate r2d2;
 
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#migrations-et-schémas" id="migrations-et-schémas"><h2>Migrations et schémas</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<p>...</p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod schema;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">mod schema;
+</code></pre>
 <a class="header" href="print.html#ajout-dattributs-au-model" id="ajout-dattributs-au-model"><h2>Ajout d'attributs au model</h2></a>
 <p>Dans <code>model.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use super::schema::reviews;
+<pre><code class="language-rust no_run ignore">use super::schema::reviews;
 
 #[derive(Serialize, Debug, Queryable, Insertable)]
 #[table_name = &quot;reviews&quot;]
@@ -634,38 +624,28 @@ pub struct Review {
     pub reviewer: String,
     pub review: String,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#configurer-le-pool-de-connection" id="configurer-le-pool-de-connection"><h2>Configurer le pool de connection</h2></a>
-<p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let manager = ConnectionManager::&lt;SqliteConnection&gt;::new(CONFIG.database_url.clone());
+<p>Dans <code>lib.rs</code>, à la place de l'assignation à <code>db_addr</code>:</p>
+<pre><code class="language-rust no_run ignore">let manager = ConnectionManager::&lt;SqliteConnection&gt;::new(CONFIG.database_url.clone());
 let pool = r2d2::Pool::builder().build(manager).expect(&quot;Failed to create pool.&quot;);
 let db_addr = SyncArbiter::start(3, move || db::DbExecutor(pool.clone()));
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#acteur-db-dbrs" id="acteur-db-dbrs"><h2>Acteur db <code>db.rs</code></h2></a>
 <a class="header" href="print.html#importer-les-nouvelles-dépendances" id="importer-les-nouvelles-dépendances"><h3>Importer les nouvelles dépendances</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use diesel;
+<pre><code class="language-rust no_run ignore">use diesel;
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 
 use schema;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#ajouter-le-pool-de-connection" id="ajouter-le-pool-de-connection"><h3>Ajouter le pool de connection</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct DbExecutor(pub Pool&lt;ConnectionManager&lt;SqliteConnection&gt;&gt;);
-#}</code></pre></pre>
+<p>Changer la définition de <code>DbExecutor</code> par:</p>
+<pre><code class="language-rust no_run ignore">pub struct DbExecutor(pub Pool&lt;ConnectionManager&lt;SqliteConnection&gt;&gt;);
+</code></pre>
 <a class="header" href="print.html#récupérer-les-reviews" id="récupérer-les-reviews"><h3>Récupérer les reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<p>Changer le message <code>GetReviews</code> par:</p>
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct GetReviews {
     pub product_id: i32,
 }
@@ -678,23 +658,23 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
     type Result = Result&lt;Vec&lt;models::Review&gt;, diesel::result::Error&gt;;
 
     fn handle(&amp;mut self, msg: GetReviews, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;getting reviews for product {}&quot;, msg.product_id);
+        warn!(&quot;getting reviews for product {}&quot;, msg.product_id);
 
         use self::schema::reviews::dsl::*;
 
         let conn: &amp;SqliteConnection = &amp;self.0.get().unwrap();
 
-        let items = reviews.filter(product_id.eq(msg.product_id)).load::models::Review(conn)?;
+        let items = reviews
+            .filter(product_id.eq(msg.product_id))
+            .load::&lt;models::Review&gt;(conn)?;
 
         Ok(items)
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#sauvegarder-une-review" id="sauvegarder-une-review"><h3>Sauvegarder une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<p>Changer le message <code>SaveReview</code> par:</p>
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,
 }
@@ -707,7 +687,7 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
     type Result = Result&lt;models::Review, diesel::result::Error&gt;;
 
     fn handle(&amp;mut self, msg: SaveReview, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;saving review {:?}&quot;, msg.review);
+        warn!(&quot;saving review {:?}&quot;, msg.review);
 
         use self::schema::reviews::dsl::*;
 
@@ -720,32 +700,56 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
         Ok(msg.review)
     }
 }
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="print.html#résultat-5" id="résultat-5"><h2>Résultat</h2></a>
+<p>On récupère les reviews de la base de données:</p>
+<pre><code>curl localhost:9081/reviews/0
+{
+   &quot;reviews&quot; : [
+      {
+         &quot;text&quot; : &quot;An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!&quot;,
+         &quot;reviewer&quot; : &quot;Reviewer1&quot;
+      },
+      {
+         &quot;reviewer&quot; : &quot;Reviewer2&quot;,
+         &quot;text&quot; : &quot;Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.&quot;
+      }
+   ],
+   &quot;id&quot; : 0
+}
+</code></pre>
+<p>Les avis envoyés sont sauvegardés:</p>
+<pre><code>curl localhost:9081/reviews/1 -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+
+curl localhost:9081/reviews/1
+{
+   &quot;id&quot; : 1,
+   &quot;reviews&quot; : [
+      {
+         &quot;text&quot; : &quot;mon avis&quot;,
+         &quot;reviewer&quot; : &quot;moi&quot;
+      }
+   ]
+}
+</code></pre>
 <a class="header" href="print.html#communiquer-avec-le-service-ratings" id="communiquer-avec-le-service-ratings"><h1>Communiquer avec le service ratings</h1></a>
 <p>Dans <code>reviews.rs</code></p>
 <a class="header" href="print.html#nouveaux-imports" id="nouveaux-imports"><h2>Nouveaux imports</h2></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::client::ClientRequest;
+<pre><code class="language-rust no_run ignore">use actix_web::client::ClientRequest;
 use actix_web::HttpMessage;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#récupérer-les-ratings" id="récupérer-les-ratings"><h2>Récupérer les ratings</h2></a>
 <a class="header" href="print.html#définir-la-structure-du-json" id="définir-la-structure-du-json"><h3>Définir la structure du json</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize)]
 pub struct RatingsResponse {
     id: i32,
     pub ratings: HashMap&lt;String, i32&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#appeler-le-service" id="appeler-le-service"><h3>Appeler le service</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
+<p>Remplacer l'assignation de <code>ratings</code> par:</p>
+<pre><code class="language-rust no_run ignore">let ratings = ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
     .finish()
     .unwrap()
     .send()
@@ -759,19 +763,51 @@ ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url,
         // in case of error, log it and continue with an empty list of ratings
         error!(&quot;{:?}&quot;, err);
         Ok(HashMap::new())
+    });
+</code></pre>
+<p>Et remplacer</p>
+<pre><code class="language-rust no_run ignore">build_response_from_ratings(ratings).responder()
+</code></pre>
+<p>par</p>
+<pre><code class="language-rust no_run ignore">ratings.and_then(build_response_from_ratings).responder()
+</code></pre>
+<a class="header" href="print.html#sauvegarder-un-nouveau-rating" id="sauvegarder-un-nouveau-rating"><h2>Sauvegarder un nouveau rating</h2></a>
+<a class="header" href="print.html#appeler-le-service-1" id="appeler-le-service-1"><h3>Appeler le service</h3></a>
+<p>Remplacer</p>
+<pre><code class="language-rust no_run ignore">state
+    .db
+    .send(db::SaveReview {
+        review: review_to_save,
     })
-#}</code></pre></pre>
-<a class="header" href="print.html#chainer-la-future" id="chainer-la-future"><h3>Chainer la future</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-...
-        .and_then(move |ratings| {
-            ...
-        }).responder()
-#}</code></pre></pre>
-<a class="header" href="print.html#résultat" id="résultat"><h3>Résultat</h3></a>
-<pre><code>curl localhost:9080/reviews/0
+    .from_err()
+    .and_then(move |_| Ok(HttpResponse::Ok().json(review.clone())))
+    .responder()
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">ClientRequest::post(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
+    .json(review.clone())
+    .unwrap()
+    .send()
+    .map(|_| ())
+    .or_else(|err| {
+        // in case of error, log it and ignore it
+        error!(&quot;{:?}&quot;, err);
+        Ok(())
+    })
+    .and_then(move |_| {
+        state
+            .db
+            .send(db::SaveReview {
+                review: review_to_save,
+            })
+            .from_err()
+            .and_then(move |_| Ok(HttpResponse::Ok().json(review.clone())))
+    })
+    .responder()
+</code></pre>
+<a class="header" href="print.html#résultat-6" id="résultat-6"><h2>Résultat</h2></a>
+<p>Les ratings sont maintenant dispo quand on demande des avis, et l'application <code>ratings</code> a loggé qu'elle a été appellée</p>
+<pre><code>curl localhost:9081/reviews/0
 {
    &quot;reviews&quot; : [
       {
@@ -794,86 +830,76 @@ ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url,
    &quot;id&quot; : 0
 }
 </code></pre>
-<a class="header" href="print.html#sauvegarder-un-nouveau-rating" id="sauvegarder-un-nouveau-rating"><h2>Sauvegarder un nouveau rating</h2></a>
-<a class="header" href="print.html#appeler-le-service-1" id="appeler-le-service-1"><h3>Appeler le service</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-ClientRequest::post(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
-    .json(review.0)
-    .unwrap()
-    .send()
-    .map(|_| ())
-    .or_else(|err| {
-        // in case of error, log it and ignore it
-        error!(&quot;{:?}&quot;, err);
-        Ok(())
-    })
-#}</code></pre></pre>
-<a class="header" href="print.html#chainer-la-future-1" id="chainer-la-future-1"><h3>Chainer la future</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-...
-        .and_then(move |_| {
-            ...
-        }).responder()
-#}</code></pre></pre>
+<pre><code>{&quot;msg&quot;:&quot;requesting ratings for product 0&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T00:52:35.348631+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+{&quot;msg&quot;:&quot;[RESPONSE][d65d721f-b0d4-4689-a1fd-7b455fedd76d][HTTP/1.1][200 OK][755µs]&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T00:52:35.348900+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
+<p>À la sauvegarde d'un avis, la note est sauvegardée dans l'application <code>ratings</code></p>
+<pre><code>curl localhost:9081/reviews/3 -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+
+curl localhost:9081/reviews/3
+{
+   &quot;reviews&quot; : [
+      {
+         &quot;reviewer&quot; : &quot;moi&quot;,
+         &quot;text&quot; : &quot;mon avis&quot;,
+         &quot;rating&quot; : {
+            &quot;color&quot; : &quot;yellow&quot;,
+            &quot;stars&quot; : 3
+         }
+      }
+   ],
+   &quot;id&quot; : 3
+}
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;saving new rating NewRating { reviewer: \&quot;moi\&quot;, rating: 3 } for product 3&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T01:00:22.008725+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+{&quot;msg&quot;:&quot;[RESPONSE][4c0951b3-f302-4759-9458-506a6b1a9f97][HTTP/1.1][200 OK][822µs]&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T01:00:22.009032+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 <a class="header" href="print.html#ajouter-un-healthcheck" id="ajouter-un-healthcheck"><h1>Ajouter un healthcheck</h1></a>
 <a class="header" href="print.html#nouvelle-dépendance" id="nouvelle-dépendance"><h2>Nouvelle dépendance</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-extern crate time;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">extern crate time;
+</code></pre>
 <a class="header" href="print.html#module-health" id="module-health"><h2>Module health</h2></a>
 <p>Dans <code>health.rs</code></p>
 <a class="header" href="print.html#ajouter-les-imports" id="ajouter-les-imports"><h3>Ajouter les imports</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::{HttpRequest, HttpResponse};
+<pre><code class="language-rust no_run ignore">use actix_web::{HttpRequest, HttpResponse};
 
 use time;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#déclarer-les-données-retournées" id="déclarer-les-données-retournées"><h3>Déclarer les données retournées</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Serialize)]
 pub struct Healthcheck {
     now: i64,
     version: &amp;'static str,
     status: &amp;'static str,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#retourner-les-données" id="retourner-les-données"><h3>Retourner les données</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn healthcheck(_: HttpRequest&lt;super::AppState&gt;) -&gt; HttpResponse {
+<pre><code class="language-rust no_run ignore">pub fn healthcheck(_: HttpRequest&lt;super::AppState&gt;) -&gt; HttpResponse {
     HttpResponse::Ok().json(Healthcheck {
         now: time::now_utc().to_timespec().sec,
         version: env!(&quot;CARGO_PKG_VERSION&quot;),
         status: &quot;Reviews is healthy&quot;,
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="print.html#ajouter-la-route-pour-get-healthcheck" id="ajouter-la-route-pour-get-healthcheck"><h2>Ajouter la route pour /GET healthcheck</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod health;
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-    .resource(&quot;/health&quot;, |r| {
+<pre><code class="language-rust no_run ignore">mod health;
+</code></pre>
+<pre><code class="language-rust no_run ignore">    .resource(&quot;/health&quot;, |r| {
         r.method(http::Method::GET).f(health::healthcheck)
     })
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="print.html#résultat-7" id="résultat-7"><h2>Résultat</h2></a>
+<pre><code>curl localhost:9081/health
+{
+   &quot;status&quot; : &quot;Reviews is healthy&quot;,
+   &quot;now&quot; : 1524179124,
+   &quot;version&quot; : &quot;0.1.0&quot;
+}
+</code></pre>
 
                     </main>
 
@@ -908,6 +934,21 @@ mod health;
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

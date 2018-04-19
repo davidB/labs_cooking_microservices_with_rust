@@ -150,28 +150,20 @@
                         <a class="header" href="ratings-request.html#communiquer-avec-le-service-ratings" id="communiquer-avec-le-service-ratings"><h1>Communiquer avec le service ratings</h1></a>
 <p>Dans <code>reviews.rs</code></p>
 <a class="header" href="ratings-request.html#nouveaux-imports" id="nouveaux-imports"><h2>Nouveaux imports</h2></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::client::ClientRequest;
+<pre><code class="language-rust no_run ignore">use actix_web::client::ClientRequest;
 use actix_web::HttpMessage;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="ratings-request.html#récupérer-les-ratings" id="récupérer-les-ratings"><h2>Récupérer les ratings</h2></a>
 <a class="header" href="ratings-request.html#définir-la-structure-du-json" id="définir-la-structure-du-json"><h3>Définir la structure du json</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize)]
 pub struct RatingsResponse {
     id: i32,
     pub ratings: HashMap&lt;String, i32&gt;,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="ratings-request.html#appeler-le-service" id="appeler-le-service"><h3>Appeler le service</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
+<p>Remplacer l'assignation de <code>ratings</code> par:</p>
+<pre><code class="language-rust no_run ignore">let ratings = ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
     .finish()
     .unwrap()
     .send()
@@ -185,19 +177,51 @@ ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url,
         // in case of error, log it and continue with an empty list of ratings
         error!(&quot;{:?}&quot;, err);
         Ok(HashMap::new())
+    });
+</code></pre>
+<p>Et remplacer</p>
+<pre><code class="language-rust no_run ignore">build_response_from_ratings(ratings).responder()
+</code></pre>
+<p>par</p>
+<pre><code class="language-rust no_run ignore">ratings.and_then(build_response_from_ratings).responder()
+</code></pre>
+<a class="header" href="ratings-request.html#sauvegarder-un-nouveau-rating" id="sauvegarder-un-nouveau-rating"><h2>Sauvegarder un nouveau rating</h2></a>
+<a class="header" href="ratings-request.html#appeler-le-service-1" id="appeler-le-service-1"><h3>Appeler le service</h3></a>
+<p>Remplacer</p>
+<pre><code class="language-rust no_run ignore">state
+    .db
+    .send(db::SaveReview {
+        review: review_to_save,
     })
-#}</code></pre></pre>
-<a class="header" href="ratings-request.html#chainer-la-future" id="chainer-la-future"><h3>Chainer la future</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-...
-        .and_then(move |ratings| {
-            ...
-        }).responder()
-#}</code></pre></pre>
-<a class="header" href="ratings-request.html#résultat" id="résultat"><h3>Résultat</h3></a>
-<pre><code>curl localhost:9080/reviews/0
+    .from_err()
+    .and_then(move |_| Ok(HttpResponse::Ok().json(review.clone())))
+    .responder()
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">ClientRequest::post(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
+    .json(review.clone())
+    .unwrap()
+    .send()
+    .map(|_| ())
+    .or_else(|err| {
+        // in case of error, log it and ignore it
+        error!(&quot;{:?}&quot;, err);
+        Ok(())
+    })
+    .and_then(move |_| {
+        state
+            .db
+            .send(db::SaveReview {
+                review: review_to_save,
+            })
+            .from_err()
+            .and_then(move |_| Ok(HttpResponse::Ok().json(review.clone())))
+    })
+    .responder()
+</code></pre>
+<a class="header" href="ratings-request.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Les ratings sont maintenant dispo quand on demande des avis, et l'application <code>ratings</code> a loggé qu'elle a été appellée</p>
+<pre><code>curl localhost:9081/reviews/0
 {
    &quot;reviews&quot; : [
       {
@@ -220,31 +244,31 @@ ClientRequest::get(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url,
    &quot;id&quot; : 0
 }
 </code></pre>
-<a class="header" href="ratings-request.html#sauvegarder-un-nouveau-rating" id="sauvegarder-un-nouveau-rating"><h2>Sauvegarder un nouveau rating</h2></a>
-<a class="header" href="ratings-request.html#appeler-le-service-1" id="appeler-le-service-1"><h3>Appeler le service</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-ClientRequest::post(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url, product_id))
-    .json(review.0)
-    .unwrap()
-    .send()
-    .map(|_| ())
-    .or_else(|err| {
-        // in case of error, log it and ignore it
-        error!(&quot;{:?}&quot;, err);
-        Ok(())
-    })
-#}</code></pre></pre>
-<a class="header" href="ratings-request.html#chainer-la-future-1" id="chainer-la-future-1"><h3>Chainer la future</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-...
-        .and_then(move |_| {
-            ...
-        }).responder()
-#}</code></pre></pre>
+<pre><code>{&quot;msg&quot;:&quot;requesting ratings for product 0&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T00:52:35.348631+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+{&quot;msg&quot;:&quot;[RESPONSE][d65d721f-b0d4-4689-a1fd-7b455fedd76d][HTTP/1.1][200 OK][755µs]&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T00:52:35.348900+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
+<p>À la sauvegarde d'un avis, la note est sauvegardée dans l'application <code>ratings</code></p>
+<pre><code>curl localhost:9081/reviews/3 -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+
+curl localhost:9081/reviews/3
+{
+   &quot;reviews&quot; : [
+      {
+         &quot;reviewer&quot; : &quot;moi&quot;,
+         &quot;text&quot; : &quot;mon avis&quot;,
+         &quot;rating&quot; : {
+            &quot;color&quot; : &quot;yellow&quot;,
+            &quot;stars&quot; : 3
+         }
+      }
+   ],
+   &quot;id&quot; : 3
+}
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;saving new rating NewRating { reviewer: \&quot;moi\&quot;, rating: 3 } for product 3&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T01:00:22.008725+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+{&quot;msg&quot;:&quot;[RESPONSE][4c0951b3-f302-4759-9458-506a6b1a9f97][HTTP/1.1][200 OK][822µs]&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;ts&quot;:&quot;2018-04-20T01:00:22.009032+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 
                     </main>
 
@@ -295,6 +319,21 @@ ClientRequest::post(&amp;format!(&quot;{}/ratings/{}&quot;, ::CONFIG.ratings_url
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

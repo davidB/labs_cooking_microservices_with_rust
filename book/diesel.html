@@ -150,30 +150,20 @@
                         <a class="header" href="diesel.html#utilisation-de-diesel" id="utilisation-de-diesel"><h1>Utilisation de diesel</h1></a>
 <a class="header" href="diesel.html#nouvelles-dépendances" id="nouvelles-dépendances"><h2>Nouvelles dépendances</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[macro_use]
+<pre><code class="language-rust no_run ignore">#[macro_use]
 extern crate diesel;
 extern crate r2d2;
 
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="diesel.html#migrations-et-schémas" id="migrations-et-schémas"><h2>Migrations et schémas</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<p>...</p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod schema;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">mod schema;
+</code></pre>
 <a class="header" href="diesel.html#ajout-dattributs-au-model" id="ajout-dattributs-au-model"><h2>Ajout d'attributs au model</h2></a>
 <p>Dans <code>model.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use super::schema::reviews;
+<pre><code class="language-rust no_run ignore">use super::schema::reviews;
 
 #[derive(Serialize, Debug, Queryable, Insertable)]
 #[table_name = &quot;reviews&quot;]
@@ -182,38 +172,28 @@ pub struct Review {
     pub reviewer: String,
     pub review: String,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="diesel.html#configurer-le-pool-de-connection" id="configurer-le-pool-de-connection"><h2>Configurer le pool de connection</h2></a>
-<p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let manager = ConnectionManager::&lt;SqliteConnection&gt;::new(CONFIG.database_url.clone());
+<p>Dans <code>lib.rs</code>, à la place de l'assignation à <code>db_addr</code>:</p>
+<pre><code class="language-rust no_run ignore">let manager = ConnectionManager::&lt;SqliteConnection&gt;::new(CONFIG.database_url.clone());
 let pool = r2d2::Pool::builder().build(manager).expect(&quot;Failed to create pool.&quot;);
 let db_addr = SyncArbiter::start(3, move || db::DbExecutor(pool.clone()));
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="diesel.html#acteur-db-dbrs" id="acteur-db-dbrs"><h2>Acteur db <code>db.rs</code></h2></a>
 <a class="header" href="diesel.html#importer-les-nouvelles-dépendances" id="importer-les-nouvelles-dépendances"><h3>Importer les nouvelles dépendances</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use diesel;
+<pre><code class="language-rust no_run ignore">use diesel;
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
 
 use schema;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="diesel.html#ajouter-le-pool-de-connection" id="ajouter-le-pool-de-connection"><h3>Ajouter le pool de connection</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct DbExecutor(pub Pool&lt;ConnectionManager&lt;SqliteConnection&gt;&gt;);
-#}</code></pre></pre>
+<p>Changer la définition de <code>DbExecutor</code> par:</p>
+<pre><code class="language-rust no_run ignore">pub struct DbExecutor(pub Pool&lt;ConnectionManager&lt;SqliteConnection&gt;&gt;);
+</code></pre>
 <a class="header" href="diesel.html#récupérer-les-reviews" id="récupérer-les-reviews"><h3>Récupérer les reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<p>Changer le message <code>GetReviews</code> par:</p>
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct GetReviews {
     pub product_id: i32,
 }
@@ -226,23 +206,23 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
     type Result = Result&lt;Vec&lt;models::Review&gt;, diesel::result::Error&gt;;
 
     fn handle(&amp;mut self, msg: GetReviews, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;getting reviews for product {}&quot;, msg.product_id);
+        warn!(&quot;getting reviews for product {}&quot;, msg.product_id);
 
         use self::schema::reviews::dsl::*;
 
         let conn: &amp;SqliteConnection = &amp;self.0.get().unwrap();
 
-        let items = reviews.filter(product_id.eq(msg.product_id)).load::models::Review(conn)?;
+        let items = reviews
+            .filter(product_id.eq(msg.product_id))
+            .load::&lt;models::Review&gt;(conn)?;
 
         Ok(items)
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="diesel.html#sauvegarder-une-review" id="sauvegarder-une-review"><h3>Sauvegarder une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<p>Changer le message <code>SaveReview</code> par:</p>
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,
 }
@@ -255,7 +235,7 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
     type Result = Result&lt;models::Review, diesel::result::Error&gt;;
 
     fn handle(&amp;mut self, msg: SaveReview, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;saving review {:?}&quot;, msg.review);
+        warn!(&quot;saving review {:?}&quot;, msg.review);
 
         use self::schema::reviews::dsl::*;
 
@@ -268,7 +248,39 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
         Ok(msg.review)
     }
 }
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="diesel.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>On récupère les reviews de la base de données:</p>
+<pre><code>curl localhost:9081/reviews/0
+{
+   &quot;reviews&quot; : [
+      {
+         &quot;text&quot; : &quot;An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!&quot;,
+         &quot;reviewer&quot; : &quot;Reviewer1&quot;
+      },
+      {
+         &quot;reviewer&quot; : &quot;Reviewer2&quot;,
+         &quot;text&quot; : &quot;Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.&quot;
+      }
+   ],
+   &quot;id&quot; : 0
+}
+</code></pre>
+<p>Les avis envoyés sont sauvegardés:</p>
+<pre><code>curl localhost:9081/reviews/1 -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+
+curl localhost:9081/reviews/1
+{
+   &quot;id&quot; : 1,
+   &quot;reviews&quot; : [
+      {
+         &quot;text&quot; : &quot;mon avis&quot;,
+         &quot;reviewer&quot; : &quot;moi&quot;
+      }
+   ]
+}
+</code></pre>
 
                     </main>
 
@@ -319,6 +331,21 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

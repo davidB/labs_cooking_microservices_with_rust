@@ -150,58 +150,48 @@
                         <a class="header" href="healthcheck.html#ajouter-un-healthcheck" id="ajouter-un-healthcheck"><h1>Ajouter un healthcheck</h1></a>
 <a class="header" href="healthcheck.html#nouvelle-dépendance" id="nouvelle-dépendance"><h2>Nouvelle dépendance</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-extern crate time;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">extern crate time;
+</code></pre>
 <a class="header" href="healthcheck.html#module-health" id="module-health"><h2>Module health</h2></a>
 <p>Dans <code>health.rs</code></p>
 <a class="header" href="healthcheck.html#ajouter-les-imports" id="ajouter-les-imports"><h3>Ajouter les imports</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix_web::{HttpRequest, HttpResponse};
+<pre><code class="language-rust no_run ignore">use actix_web::{HttpRequest, HttpResponse};
 
 use time;
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="healthcheck.html#déclarer-les-données-retournées" id="déclarer-les-données-retournées"><h3>Déclarer les données retournées</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Serialize)]
 pub struct Healthcheck {
     now: i64,
     version: &amp;'static str,
     status: &amp;'static str,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="healthcheck.html#retourner-les-données" id="retourner-les-données"><h3>Retourner les données</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn healthcheck(_: HttpRequest&lt;super::AppState&gt;) -&gt; HttpResponse {
+<pre><code class="language-rust no_run ignore">pub fn healthcheck(_: HttpRequest&lt;super::AppState&gt;) -&gt; HttpResponse {
     HttpResponse::Ok().json(Healthcheck {
         now: time::now_utc().to_timespec().sec,
         version: env!(&quot;CARGO_PKG_VERSION&quot;),
         status: &quot;Reviews is healthy&quot;,
     })
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="healthcheck.html#ajouter-la-route-pour-get-healthcheck" id="ajouter-la-route-pour-get-healthcheck"><h2>Ajouter la route pour /GET healthcheck</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod health;
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-    .resource(&quot;/health&quot;, |r| {
+<pre><code class="language-rust no_run ignore">mod health;
+</code></pre>
+<pre><code class="language-rust no_run ignore">    .resource(&quot;/health&quot;, |r| {
         r.method(http::Method::GET).f(health::healthcheck)
     })
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="healthcheck.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<pre><code>curl localhost:9081/health
+{
+   &quot;status&quot; : &quot;Reviews is healthy&quot;,
+   &quot;now&quot; : 1524179124,
+   &quot;version&quot; : &quot;0.1.0&quot;
+}
+</code></pre>
 
                     </main>
 
@@ -244,6 +234,21 @@ mod health;
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

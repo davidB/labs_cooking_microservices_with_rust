@@ -150,34 +150,22 @@
                         <a class="header" href="data-serde.html#renvoyer-des-données" id="renvoyer-des-données"><h1>Renvoyer des données</h1></a>
 <a class="header" href="data-serde.html#définir-le-modèle" id="définir-le-modèle"><h2>Définir le modèle</h2></a>
 <p>Dans <code>models.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Serialize, Debug)]
+<pre><code class="language-rust no_run ignore">#[derive(Serialize, Debug)]
 pub struct Review {
     pub product_id: i32,
     pub reviewer: String,
     pub review: String,
 }
-#}</code></pre></pre>
+</code></pre>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-mod models;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">mod models;
+</code></pre>
 <a class="header" href="data-serde.html#traduire-avec-les-entrées--sorties" id="traduire-avec-les-entrées--sorties"><h2>Traduire avec les entrées / sorties</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use models;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">use models;
+</code></pre>
 <a class="header" href="data-serde.html#définir-la-structure-json-de-sortie" id="définir-la-structure-json-de-sortie"><h3>Définir la structure JSON de sortie</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Serialize)]
 pub struct Product {
     pub id: i32,
     pub reviews: Vec&lt;Review&gt;,
@@ -204,15 +192,12 @@ pub enum Color {
     Yellow,
     Red,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="data-serde.html#convertir-le-modèle-en-sortie" id="convertir-le-modèle-en-sortie"><h3>Convertir le modèle en sortie</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-pub fn rating_nb_to_rating(rating: &amp;i32) -&gt; Rating {
+<pre><code class="language-rust no_run ignore">pub fn rating_nb_to_rating(rating: i32) -&gt; Rating {
     Rating {
-        stars: *rating,
-        color: match *rating {
+        stars: rating,
+        color: match rating {
             1 =&gt; Color::Red,
             2 | 3 =&gt; Color::Yellow,
             _ =&gt; Color::Blue,
@@ -229,72 +214,80 @@ pub fn reviews_with_ratings(
         .map(|review| {
             let reviewer = review.reviewer.clone();
             Review {
-                rating: ratings.get(&amp;reviewer).map(rating_nb_to_rating),
+                rating: ratings.get(&amp;reviewer).map(|&amp;r| rating_nb_to_rating(r)),
                 reviewer: reviewer,
                 text: review.review.clone(),
             }
         })
         .collect()
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="data-serde.html#renvoyer-la-réponse" id="renvoyer-la-réponse"><h3>Renvoyer la réponse</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let ratings = HashMap::new();
-futures::future::ok(Ok(vec![]))
-    .and_then(move |mut reviews: Result&lt;Vec&lt;models::Review&gt;, ()&gt;| {
-        if reviews.is_err() {
-            error!(&quot;{:?}&quot;, reviews);
-            reviews = Ok(vec![]);
-        }
+<pre><code class="language-rust no_run ignore">let ratings = HashMap::new();
+let reviews = vec![];
+
+let build_response_from_ratings = move |ratings| {
+    futures::future::result({
         // build the response
         let product = Product {
             id: product_id,
-            reviews: reviews_with_ratings(reviews.unwrap(), ratings),
+            reviews: reviews_with_ratings(reviews, ratings),
         };
         // return a 200 response with the reviews as json
         Ok(HttpResponse::Ok().json(product))
     })
-    .responder()
-#}</code></pre></pre>
+};
+
+build_response_from_ratings(ratings).responder()
+</code></pre>
 <a class="header" href="data-serde.html#définir-la-structure-json-en-entrée" id="définir-la-structure-json-en-entrée"><h3>Définir la structure JSON en entrée</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug, Deserialize, Serialize)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct NewReview {
     reviewer: String,
     text: String,
     rating: i32,
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="data-serde.html#convertir-lentrée-en-modèle" id="convertir-lentrée-en-modèle"><h3>Convertir l'entrée en modèle</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let review_to_save = models::Review {
+<pre><code class="language-rust no_run ignore">let review_to_save = models::Review {
     product_id: product_id as i32,
     reviewer: review.reviewer.clone(),
     review: review.text.clone(),
 };
 
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="data-serde.html#renvoyer-la-réponse-1" id="renvoyer-la-réponse-1"><h3>Renvoyer la réponse</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-futures::future::ok(Ok(NewReview {
-    reviewer: review.reviewer.clone(),
-    text: review.text.clone(),
-    rating: review.rating,
-}))
-    .and_then(|res: Result&lt;NewReview, ()&gt;| match res {
-        Ok(review) =&gt; Ok(HttpResponse::Ok().json(review)),
-        Err(_) =&gt; Ok(HttpResponse::InternalServerError().into()),
-    })
-    .responder()
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">futures::future::result({
+    Ok(HttpResponse::Ok().json(review.clone()))
+}).responder()
+</code></pre>
+<a class="header" href="data-serde.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Récupérer les reviews d'un product donne une liste vide</p>
+<pre><code>curl localhost:9080/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 21
+content-type: application/json
+date: Thu, 19 Apr 2018 21:59:21 GMT
+
+{&quot;id&quot;:0,&quot;reviews&quot;:[]}
+</code></pre>
+<p>Poster une review la renvoie telle quelle</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+HTTP/1.1 200 OK
+content-length: 47
+content-type: application/json
+date: Thu, 19 Apr 2018 22:00:57 GMT
+
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+</code></pre>
+<p>Poster un JSON invalide répond une erreur 400 et un message dans les logs</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3}'
+HTTP/1.1 400 Bad Request
+content-length: 0
+date: Thu, 19 Apr 2018 22:01:54 GMT
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;Error occured during request handling: Json deserialize error: missing field `text` at line 1 column 29&quot;,&quot;level&quot;:&quot;WARN&quot;,&quot;ts&quot;:&quot;2018-04-20T00:01:55.287447+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 
                     </main>
 
@@ -345,6 +338,21 @@ futures::future::ok(Ok(NewReview {
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

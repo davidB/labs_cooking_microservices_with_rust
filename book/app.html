@@ -150,10 +150,7 @@
                         <a class="header" href="app.html#serveur-http" id="serveur-http"><h1>Serveur HTTP</h1></a>
 <a class="header" href="app.html#démarrer-une-application-et-un-système-dacteur" id="démarrer-une-application-et-un-système-dacteur"><h2>Démarrer une application et un système d'acteur</h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-extern crate actix;
+<pre><code class="language-rust no_run ignore">extern crate actix;
 extern crate actix_web;
 extern crate futures;
 
@@ -166,11 +163,9 @@ use actix_web::{server, App};
 
 pub struct AppState {
 }
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let sys = actix::System::new(&quot;reviews&quot;);
+</code></pre>
+<p>Dans la fonction <code>run</code></p>
+<pre><code class="language-rust no_run ignore">let sys = actix::System::new(&quot;reviews&quot;);
 
 server::new(move || {
     App::with_state(AppState {
@@ -180,7 +175,14 @@ server::new(move || {
     .start();
 
 let _ = sys.run();
-#}</code></pre></pre>
+</code></pre>
+<a class="header" href="app.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Un serveur http qui écoute, mais ne répond que des 404</p>
+<pre><code class="language-bash">curl localhost:9080 -i
+HTTP/1.1 404 Not Found
+content-length: 0
+date: Thu, 19 Apr 2018 21:36:42 GMT
+</code></pre>
 
                     </main>
 
@@ -231,6 +233,21 @@ let _ = sys.run();
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

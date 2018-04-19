@@ -150,22 +150,16 @@
                         <a class="header" href="actor.html#acteur-db" id="acteur-db"><h1>Acteur DB</h1></a>
 <a class="header" href="actor.html#définir-lacteur" id="définir-lacteur"><h2>Définir l'acteur</h2></a>
 <p>Dans <code>db.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix::prelude::*;
+<pre><code class="language-rust no_run ignore">use actix::prelude::*;
 
 pub struct DbExecutor();
 
 impl Actor for DbExecutor {
     type Context = SyncContext&lt;Self&gt;;
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="actor.html#définir-le-message-getreviews" id="définir-le-message-getreviews"><h3>Définir le message <code>GetReviews</code></h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use models;
+<pre><code class="language-rust no_run ignore">use models;
 
 #[derive(Debug)]
 pub struct GetReviews {
@@ -180,7 +174,7 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
     type Result = Result&lt;Vec&lt;models::Review&gt;, ()&gt;;
 
     fn handle(&amp;mut self, msg: GetReviews, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;getting reviews for product {}&quot;, msg.product_id);
+        warn!(&quot;getting reviews for product {}&quot;, msg.product_id);
 
         Ok(vec![
             models::Review {
@@ -191,12 +185,9 @@ impl Handler&lt;GetReviews&gt; for DbExecutor {
         ])
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="actor.html#définir-le-message-savereview" id="définir-le-message-savereview"><h3>Définir le message <code>SaveReview</code></h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Debug)]
+<pre><code class="language-rust no_run ignore">#[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,
 }
@@ -209,67 +200,90 @@ impl Handler&lt;SaveReview&gt; for DbExecutor {
     type Result = Result&lt;models::Review, ()&gt;;
 
     fn handle(&amp;mut self, msg: SaveReview, _: &amp;mut Self::Context) -&gt; Self::Result {
-        info!(&quot;saving review {:?}&quot;, msg.review);
+        warn!(&quot;saving review {:?}&quot;, msg.review);
 
         Ok(msg.review)
     }
 }
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="actor.html#ajouter-lacteur-à-lappstate" id="ajouter-lacteur-à-lappstate"><h2>Ajouter l'acteur à l'<code>AppState</code></h2></a>
 <p>Dans <code>lib.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use actix::prelude::*;
+<pre><code class="language-rust no_run ignore">use actix::prelude::*;
 
 mod db;
 
 pub struct AppState {
     db: Addr&lt;Syn, db::DbExecutor&gt;,
 }
-#}</code></pre></pre>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-let db_addr = SyncArbiter::start(3, move || db::DbExecutor());
+</code></pre>
+<pre><code class="language-rust no_run ignore">let db_addr = SyncArbiter::start(3, move || db::DbExecutor());
 
 server::new(move || {
     App::with_state(AppState {
         db: db_addr.clone(),
     }).middleware(Logger::default())
-#}</code></pre></pre>
+</code></pre>
 <a class="header" href="actor.html#appeller-lacteur-pendant-les-requêtes" id="appeller-lacteur-pendant-les-requêtes"><h2>Appeller l'acteur pendant les requêtes</h2></a>
 <p>Dans <code>reviews.rs</code></p>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-use db;
-#}</code></pre></pre>
+<pre><code class="language-rust no_run ignore">use db;
+</code></pre>
 <a class="header" href="actor.html#get-des-reviews" id="get-des-reviews"><h3>Get des reviews</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-state
+<p>Enlever</p>
+<pre><code class="language-rust no_run ignore">let reviews = vec![];
+</code></pre>
+<p>Et remplacer</p>
+<pre><code class="language-rust no_run ignore">futures::future::result({
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">state
     .db
     .send(db::GetReviews {
         product_id: product_id,
     })
-    .and_then(move |mut reviews| {
-        ...
-#}</code></pre></pre>
+    .map(|result| match result {
+        Ok(reviews) =&gt; reviews,
+        Err(err) =&gt; {
+            error!(&quot;{:?}&quot;, err);
+            vec![]
+        }
+    })
+    .from_err()
+    .and_then(move |reviews| {
+</code></pre>
 <a class="header" href="actor.html#save-dune-review" id="save-dune-review"><h3>Save d'une review</h3></a>
-<pre><pre class="playpen"><code class="language-rust no_run">
-# #![allow(unused_variables)]
-#fn main() {
-state
+<p>Remplacer</p>
+<pre><code class="language-rust no_run ignore">futures::future::result({ Ok(HttpResponse::Ok().json(review.clone())) }).responder()
+</code></pre>
+<p>par:</p>
+<pre><code class="language-rust no_run ignore">state
     .db
     .send(db::SaveReview {
         review: review_to_save,
     })
     .from_err()
-    .and_then(|res| match res {
-        ...
-#}</code></pre></pre>
+    .and_then(move |_| { Ok(HttpResponse::Ok().json(review.clone())) }).responder()
+</code></pre>
+<a class="header" href="actor.html#résultat" id="résultat"><h2>Résultat</h2></a>
+<p>Notre avis s'affiche !</p>
+<pre><code>curl localhost:9080/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 57
+content-type: application/json
+date: Thu, 19 Apr 2018 22:13:43 GMT
+
+{&quot;id&quot;:0,&quot;reviews&quot;:[{&quot;reviewer&quot;:&quot;user1&quot;,&quot;text&quot;:&quot;great!&quot;}]}
+</code></pre>
+<p>À la sauvegarde d'un avis, un log s'affiche:</p>
+<pre><code>curl localhost:9080/reviews/0 -i -H 'Content-Type: application/json' -d '{&quot;reviewer&quot;:&quot;moi&quot;,&quot;rating&quot;:3,&quot;text&quot;:&quot;mon avis&quot;}'
+HTTP/1.1 200 OK
+content-length: 47
+content-type: application/json
+date: Thu, 19 Apr 2018 22:23:06 GMT
+
+{&quot;reviewer&quot;:&quot;moi&quot;,&quot;text&quot;:&quot;mon avis&quot;,&quot;rating&quot;:3}
+</code></pre>
+<pre><code>{&quot;msg&quot;:&quot;saving review Review { product_id: 0, reviewer: \&quot;moi\&quot;, review: \&quot;mon avis\&quot; }&quot;,&quot;level&quot;:&quot;WARN&quot;,&quot;ts&quot;:&quot;2018-04-20T00:23:06.973686+02:00&quot;,&quot;logger&quot;:&quot;app&quot;}
+</code></pre>
 
                     </main>
 
@@ -320,6 +334,21 @@ state
             }
         </script>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         
