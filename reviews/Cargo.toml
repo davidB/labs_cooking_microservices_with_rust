@@ -1,0 +1,37 @@
+[package]
+name = "reviews"
+version = "0.1.0"
+authors = ["François Mockers <mockersf@gmail.com>"]
+
+[lib]
+name = "reviews"
+path = "src/lib.rs"
+
+[[bin]]
+name = "reviews"
+path = "src/bin.rs"
+
+[dependencies]
+actix-web = "0.5"
+actix = "0.5"
+futures = "0.1"
+
+serde = "1.0"
+serde_derive = "1.0"
+
+diesel = { version = "1.2", features = ["sqlite", "r2d2"] }
+r2d2 = "0.8"
+
+lazy_static = "1.0"
+
+time = "0.1"
+
+log = "0.4"
+env_logger = "0.5"
+slog = "2"
+slog-term = "2"
+slog-stdlog = "3"
+slog-scope = "4"
+slog-async = "2"
+slog-envlogger = "2.1.0"
+slog-json = "2.2.0"
