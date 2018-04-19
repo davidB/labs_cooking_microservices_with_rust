@@ -1,11 +1,5 @@
 # Préparation
 
-## Branche git
-
-```bash
-git checkout reviews-todo
-```
-
 ## Avoir le hands on en local
 
 ```bash
