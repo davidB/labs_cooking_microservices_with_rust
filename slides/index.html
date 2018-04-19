@@ -600,6 +600,7 @@
 				</section>
 				<section>
 					<h2>Let's code</h2>
+					<h4><a href="https://bit.ly/rust-cook">https://bit.ly/rust-cook</a></h4>
 					<pre><code data-trim data-noescape class="sh">
 						git clone https://github.com/davidB/labs_cooking_microservices_with_rust rust-cook
 						cd rust-cook/reviews
@@ -614,66 +615,6 @@
 						<li><a href="http://ironframework.io">iron</a> : stable, plus maintenu</li>
 						<li><a href="https://hyper.rs">hyper</a> : bas niveau</li>
 						<li><a href="https://github.com/tokio-rs/tokio-minihttp">tokio-minihttp</a> : très bas niveau</li>
-					</ul>
-				</section>
-				<section>
-					<h2>Crates utilés</h2>
-					<ul>
-						<li>http, mime : types pour les requêtes HTTP</li>
-						<li>futures, hyper, rayon, may : asynchrone &amp; concurrence</li>
-						<li>lazy_static : variable statique lazy</li>
-						<li>diesel, r2d2 : ORM &amp; pool de connections</li>
-						<li>serde, serde_derive, serde_json</li>
-						<li>itertools : helpers pour les iterators</li>
-						<li>reqwest : requêtes HTTP bloquantes</li>
-						<li>log, env_logger, slog, fern : logs et configuration</li>
-						<li>clap : parser de ligne de commande</li>
-						<li>uuid, chrono : types utiles</li>
-					</ul>
-				</section>
-				<section>
-					<h2>Premier service: Ratings</h2>
-					<pre><code data-trim data-noescape class="console">
-						curl localhost:9080/ratings/0
-						{
-							"id" : 0,
-							"ratings" : {
-								"Reviewer2" : 4,
-								"Reviewer1" : 5
-							}
-						}</code></pre>
-					<ul>
-						<li>gotham</li>
-						<li>serde</li>
-						<li>lazy_static, Arc, Mutex</li>
-					</ul>
-				</section>
-				<section>
-					<h2>code</h2>
-					<dt>gotham <span class="git-branch"><i class="fab fa-github"></i> ratings-gotham</span></dt>
-					<ul>
-						<li><a href="https://gotham.rs">https://gotham.rs</a></li>
-						<li>router les requêtes</li>
-						<li>retourner une réponse</li>
-						<li>lire le body d'une requête</li>
-					</ul>
-					<dt>serde <span class="git-branch"><i class="fab fa-github"></i> ratings-serde</span></dt>
-					<ul>
-						<li><a href="https://serde.rs">https://serde.rs</a></li>
-						<li>permet de sérialiser / déserialiser par dérivation automatique</li>
-						<li>supporte JSON, URL encoded, XML, BSON, ...</li>
-						<li>configuration : <a href="https://serde.rs/attributes.html">https://serde.rs/attributes.html</a></li>
-					</ul>
-				</section>
-				<section>
-					<h2>code</h2>
-					<dt>lazy_static, Arc, Mutex <span class="git-branch"><i class="fab fa-github"></i> ratings-db</span></dt>
-					<ul>
-						<li><a href="https://crates.io/crates/lazy_static">https://crates.io/crates/lazy_static</a></li>
-						<li>variable statique initialisée à sa première utilisation</li>
-						<li><a href="https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/">Choisir ses garanties</a></li>
-						<li>Atomic reference count + Mutex : tout le monde peut devenir owner et modifier les données dans un environment multithread</li>
-						<li>Box, Cow, Rc, Arc, Cell, RefCell, Mutex, RwLock</li>
 					</ul>
 				</section>
 				<section class="questions" data-state="flash" align="center">
@@ -692,7 +633,6 @@
 						<li>découpage en binaire + library</li>
 						<li>test d'intégration</li>
 						<li>test de doc</li>
-						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-tests</span></li>
 					</ul>
 				</section>
 				<section>
@@ -729,7 +669,6 @@
 							</ul>
 						</li>
 						<li>struct Config disponible avec lazy_static</li>
-						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-config</span></li>
 					</ul>
 				</section>
 				<section>
@@ -739,7 +678,6 @@
 						<li><a hreh="https://docs.rs/env_logger/*/env_logger/">env_logger</a> : configuration minimale, permet de choisir le niveau de log par variable d'environment</li>
 						<li><a href="https://docs.rs/fern/*/fern/">fern</a> : beaucoup de configuration possible</li>
 						<li><a href="https://docs.rs/slog/*/slog/">slog</a> : beaucoup de points d'extension possible (<a href="https://crates.io/search?q=slog">liste</a>)</li>
-						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-logs</span></li>
 					</ul>
 					<aside class="notes">
 						TODO code (startup/shutdown)
@@ -755,7 +693,6 @@
 						<li><a href="https://docs.rs/chrono/*/chrono/">chrono</a> pour avoir une date formatée</li>
 						<li><a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates">env!</a> pour accèder à certaines des informations de build</li>
 						<li><a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html">script de build</a> pour le reste (git ref, date de build, ...)</li>
-						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-healthcheck</span></li>
 					</ul>
 				</section>
 				<section>
@@ -792,75 +729,6 @@
 					<h2>Services</h2>
 					<img src="images/withistio.svg" width="60%" style="display:block;margin-left:auto;margin-right:auto;" >
 					<p style="font-size: 60%"><a href="https://istio.io/docs/guides/bookinfo.html" target="_blank">https://istio.io/docs/guides/bookinfo.html</a></p>
-				</section>
-				<section>
-					<h2>Second service: Reviews</h2>
-					<pre><code data-trim data-noescape class="sh">
-						curl localhost:9080/reviews/0
-						{
-							"id" : 0,
-							"reviews" : [
-								{
-									"text" : "An extremely entertaining play by Shakespeare.",
-									"rating" : { "color" : "blue", "stars" : 5 },
-									"reviewer" : "Reviewer1"
-								},
-								...
-							]
-						}
-					</code></pre>
-					<ul>
-						<li>actix-web, actix</li>
-						<li>diesel</li>
-						<li>chaînage de futures</li>
-					</ul>
-				</section>
-				<section>
-					<h2>code</h2>
-					<dt>actix-web <span class="git-branch"><i class="fab fa-github"></i> reviews-actix-web</span></dt>
-					<ul>
-						<li>https://github.com/actix/actix-web</li>
-						<li>router les requêtes</li>
-						<li>retourner une réponse</li>
-						<li>les extractors</li>
-					</ul>
-					<dt>actix <span class="git-branch"><i class="fab fa-github"></i> reviews-actix</span></dt>
-					<ul>
-						<li>https://github.com/actix/actix</li>
-						<li>créer un acteur et un type de message</li>
-						<li>envoyer un message et attendre la réponse</li>
-					</ul>
-				</section>
-				<section>
-					<h2>code</h2>
-					<dt>diesel <span class="git-branch"><i class="fab fa-github"></i> reviews-diesel</span></dt>
-					<ul>
-						<li>http://diesel.rs</li>
-						<li>diesel_cli
-							<pre><code data-trim data-noescape class="sh">
-								cargo install diesel_cli
-								DATABASE_URL=test.sqlite diesel setup
-							</code></pre>
-						</li>
-						<li>écrire la première migration
-							<pre><code data-trim data-noescape class="sh">
-									diesel migration generate reviews
-									DATABASE_URL=test.sqlite diesel migration run
-									DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
-								</code></pre>
-							</li>
-							<li>écrire une requête</li>
-					</ul>
-				</section>
-				<section>
-					<h2>code</h2>
-					<dt>les futures <span class="git-branch"><i class="fab fa-github"></i> reviews-futures</span></dt>
-					<ul>
-						<li>chainer les futures : map, and_then</li>
-						<li>définir ses erreurs : failures</li>
-						<li>gérer les erreurs : from_err, map_err, or_else</li>
-						<li>retourner un future : Box</li>
-					</ul>
 				</section>
 				<section>
 					<h2>"Dockerfile"</h2>
@@ -956,6 +824,163 @@
 					</ul>
 				</section>
 				<section>
+					<h2>Introduire Rust</h2>
+					<ul>
+						<li>cli tools: ripgrep (rg), exa, xsv...</li>
+						<li>server &amp; microservices: business, tooling (infra, security, build, test)
+							<br><i>(conduit, chaos manager, i'Krelln)</i></li>
+						<li>side-car, agent, proxy services</li>
+						<li>function (FaaS)</li>
+						<li>webclient: "target webassembly"</li>
+						<li>embedded</li>
+						<li>fragment code optimisé (pour intégration)</li>
+						<li>databases: <a href="https://github.com/mozilla/mentat">mentat</a>, <a href="https://github.com/pingcap/tidb">tidb</a></li>
+						<li><a href="https://www.rust-lang.org/en-US/friends.html" target="_blank">https://www.rust-lang.org/en-US/friends.html</a></li>
+					</ul>
+				</section>
+				<section>
+					<h2>Jouer avec Rust</h2>
+					<ul>
+						<li>Contribuer a des crates opensource</li>
+						<li>CodinGame, ...</li>
+						<li>exercism.io</li>
+						<li>???</li>
+					</ul>
+					<aside class="notes"></aside>
+				</section>
+				<section class="questions" data-state="flash" align="center">
+					<i class="fas fa-question fa-10x"></i>
+				</section>
+			</section>
+			<section>
+				<section data-state="flash" align="center">
+					<h1>Merci</h1>
+					<a href="http://bit.ly/rust-cook" target="_blank">http://bit.ly/rust-cook</a>
+				</section>
+				<section>
+					<h2>Premier service: Ratings</h2>
+					<pre><code data-trim data-noescape class="console">
+						curl localhost:9080/ratings/0
+						{
+							"id" : 0,
+							"ratings" : {
+								"Reviewer2" : 4,
+								"Reviewer1" : 5
+							}
+						}</code></pre>
+					<ul>
+						<li>gotham</li>
+						<li>serde</li>
+						<li>lazy_static, Arc, Mutex</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<dt>gotham <span class="git-branch"><i class="fab fa-github"></i> ratings-gotham</span></dt>
+					<ul>
+						<li><a href="https://gotham.rs">https://gotham.rs</a></li>
+						<li>router les requêtes</li>
+						<li>retourner une réponse</li>
+						<li>lire le body d'une requête</li>
+					</ul>
+					<dt>serde <span class="git-branch"><i class="fab fa-github"></i> ratings-serde</span></dt>
+					<ul>
+						<li><a href="https://serde.rs">https://serde.rs</a></li>
+						<li>permet de sérialiser / déserialiser par dérivation automatique</li>
+						<li>supporte JSON, URL encoded, XML, BSON, ...</li>
+						<li>configuration : <a href="https://serde.rs/attributes.html">https://serde.rs/attributes.html</a></li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<dt>lazy_static, Arc, Mutex <span class="git-branch"><i class="fab fa-github"></i> ratings-db</span></dt>
+					<ul>
+						<li><a href="https://crates.io/crates/lazy_static">https://crates.io/crates/lazy_static</a></li>
+						<li>variable statique initialisée à sa première utilisation</li>
+						<li><a href="https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/">Choisir ses garanties</a></li>
+						<li>Atomic reference count + Mutex : tout le monde peut devenir owner et modifier les données dans un environment multithread</li>
+						<li>Box, Cow, Rc, Arc, Cell, RefCell, Mutex, RwLock</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<ul>
+						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-tests</span></li>
+						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-config</span></li>
+						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-logs</span></li>
+						<li><span class="git-branch"><i class="fab fa-github"></i> ratings-healthcheck</span></li>
+					</ul>
+				</section>
+				<section>
+					<h2>Second service: Reviews</h2>
+					<pre><code data-trim data-noescape class="sh">
+						curl localhost:9080/reviews/0
+						{
+							"id" : 0,
+							"reviews" : [
+								{
+									"text" : "An extremely entertaining play by Shakespeare.",
+									"rating" : { "color" : "blue", "stars" : 5 },
+									"reviewer" : "Reviewer1"
+								},
+								...
+							]
+						}
+					</code></pre>
+					<ul>
+						<li>actix-web, actix</li>
+						<li>diesel</li>
+						<li>chaînage de futures</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<dt>actix-web <span class="git-branch"><i class="fab fa-github"></i> reviews-actix-web</span></dt>
+					<ul>
+						<li>https://github.com/actix/actix-web</li>
+						<li>router les requêtes</li>
+						<li>retourner une réponse</li>
+						<li>les extractors</li>
+					</ul>
+					<dt>actix <span class="git-branch"><i class="fab fa-github"></i> reviews-actix</span></dt>
+					<ul>
+						<li>https://github.com/actix/actix</li>
+						<li>créer un acteur et un type de message</li>
+						<li>envoyer un message et attendre la réponse</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<dt>diesel <span class="git-branch"><i class="fab fa-github"></i> reviews-diesel</span></dt>
+					<ul>
+						<li>http://diesel.rs</li>
+						<li>diesel_cli
+							<pre><code data-trim data-noescape class="sh">
+								cargo install diesel_cli
+								DATABASE_URL=test.sqlite diesel setup
+							</code></pre>
+						</li>
+						<li>écrire la première migration
+							<pre><code data-trim data-noescape class="sh">
+									diesel migration generate reviews
+									DATABASE_URL=test.sqlite diesel migration run
+									DATABASE_URL=test.sqlite diesel print-schema > src/schema.rs
+								</code></pre>
+							</li>
+							<li>écrire une requête</li>
+					</ul>
+				</section>
+				<section>
+					<h2>code</h2>
+					<dt>les futures <span class="git-branch"><i class="fab fa-github"></i> reviews-futures</span></dt>
+					<ul>
+						<li>chainer les futures : map, and_then</li>
+						<li>définir ses erreurs : failures</li>
+						<li>gérer les erreurs : from_err, map_err, or_else</li>
+						<li>retourner un future : Box</li>
+					</ul>
+				</section>
+				<section>
 					<h2>Reviews &amp; Graphql</h2>
 					<pre><code data-trim data-noescape class="sh">
 
@@ -1001,40 +1026,6 @@
 						<li>définit le trait manuellement</li>
 						<li>permet de ne récupérer les données d'un champ que si il est demandé</li>
 					</ul>
-				</section>
-				<section>
-					<h2>Introduire Rust</h2>
-					<ul>
-						<li>cli tools: ripgrep (rg), exa, xsv...</li>
-						<li>server &amp; microservices: business, tooling (infra, security, build, test)
-							<br><i>(conduit, chaos manager, i'Krelln)</i></li>
-						<li>side-car, agent, proxy services</li>
-						<li>function (FaaS)</li>
-						<li>webclient: "target webassembly"</li>
-						<li>embedded</li>
-						<li>fragment code optimisé (pour intégration)</li>
-						<li>databases: <a href="https://github.com/mozilla/mentat">mentat</a>, <a href="https://github.com/pingcap/tidb">tidb</a></li>
-						<li><a href="https://www.rust-lang.org/en-US/friends.html" target="_blank">https://www.rust-lang.org/en-US/friends.html</a></li>
-					</ul>
-				</section>
-				<section>
-					<h2>Jouer avec Rust</h2>
-					<ul>
-						<li>Contribuer a des crates opensource</li>
-						<li>CodinGame, ...</li>
-						<li>exercism.io</li>
-						<li>???</li>
-					</ul>
-					<aside class="notes"></aside>
-				</section>
-				<section class="questions" data-state="flash" align="center">
-					<i class="fas fa-question fa-10x"></i>
-				</section>
-			</section>
-			<section>
-				<section data-state="flash" align="center">
-					<h1>Merci</h1>
-					<a href="http://bit.ly/rust-cook" target="_blank">http://bit.ly/rust-cook</a>
 				</section>
 			</section>
 		</div>
