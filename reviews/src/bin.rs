@@ -13,8 +13,6 @@ extern crate reviews;
 
 use slog::Drain;
 
-mod config;
-
 fn init_log() -> slog::Logger {
     // format
     let drain = slog_json::Json::default(std::io::stderr()).fuse();
@@ -33,8 +31,7 @@ fn main() {
     let _scope_guard = slog_scope::set_global_logger(root_logger);
     let _log_guard = slog_stdlog::init().unwrap();
 
-    let config = config::Config::new();
-    let addr = format!("{}:{}", config.host, config.port);
+    let addr = "127.0.0.1:9080".to_string();
 
     slog_info!(slog_scope::logger(), "slog info";"address" => &addr);
     slog_scope::scope(&slog_scope::logger().new(slog_o!("scope" => "1")), || {
