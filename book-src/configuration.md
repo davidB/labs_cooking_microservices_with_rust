@@ -17,7 +17,7 @@ impl Config {
     pub fn new() -> Self {
         Self {
             host: env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string()),
-            port: env::var("PORT").unwrap_or_else(|_| "9080".to_string()),
+            port: env::var("PORT").unwrap_or_else(|_| "9081".to_string()),
             database_url: env::var("DATABASE_URL").unwrap_or_else(|_| "db.sqlite".to_string()),
             ratings_url: env::var("RATINGS_URL")
                 .unwrap_or_else(|_| "http://ratings:9080".to_string()),
@@ -33,6 +33,7 @@ Dans `bin.rs`
 mod config;
 ```
 
+Remplacer l'assignation existante d'`addr` par:
 ```
 let config = config::Config::new();
 let addr = format!("{}:{}", config.host, config.port);
@@ -50,4 +51,17 @@ mod config;
 lazy_static! {
     static ref CONFIG: config::Config = config::Config::new();
 }
+```
+
+## Résultat
+
+Notre service écoute maintenant sur le port 9081
+```
+curl localhost:9081/reviews/0 -i
+HTTP/1.1 200 OK
+content-length: 57
+content-type: application/json
+date: Thu, 19 Apr 2018 22:27:26 GMT
+
+{"id":0,"reviews":[{"reviewer":"user1","text":"great!"}]}
 ```

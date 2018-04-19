@@ -3,7 +3,7 @@
 ## Définir les méthodes retournant une réponse
 Dans `reviews.rs`
 
-```
+```rust,no_run,ignore
 use std::collections::HashMap;
 
 use actix_web::{error, AsyncResponder, HttpResponse, Json, Path, State};
@@ -28,7 +28,8 @@ pub fn reviews(
     state: State<super::AppState>,
 ) -> Box<Future<Item = HttpResponse, Error = error::Error>> {
     let product_id = product_id.product_id;
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+
+    unimplemented!()
 }
 ```
 
@@ -45,7 +46,7 @@ pub fn create_review(
 ) -> Box<Future<Item = HttpResponse, Error = error::Error>> {
     let product_id = product_id.product_id;
 
-    futures::future::ok(HttpResponse::Ok().finish()).responder()
+    unimplemented!()
 }
 ```
 
@@ -69,4 +70,17 @@ server::new(move || {
 }).bind(addr)
     .unwrap()
     .start();
+```
+
+## Résultat
+
+Les routes définies ne répondent pas, et un log apparaît quand on les appelle
+
+```bash
+curl localhost:9080/reviews/0 -i
+curl: (52) Empty reply from server
+```
+
+```
+thread 'arbiter:"85373381-235b-47af-bde8-4d85e5b778d8":"actor"' panicked at 'not yet implemented', src/reviews.rs:18:5
 ```

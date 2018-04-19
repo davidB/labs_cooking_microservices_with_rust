@@ -53,3 +53,14 @@ mod health;
         r.method(http::Method::GET).f(health::healthcheck)
     })
 ```
+
+## Résultat
+
+```
+curl localhost:9081/health
+{
+   "status" : "Reviews is healthy",
+   "now" : 1524179124,
+   "version" : "0.1.0"
+}
+```

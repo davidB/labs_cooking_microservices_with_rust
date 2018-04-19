@@ -19,6 +19,8 @@ pub struct AppState {
 }
 ```
 
+Dans la fonction `run`
+
 ```rust,no_run,ignore
 let sys = actix::System::new("reviews");
 
@@ -30,4 +32,15 @@ server::new(move || {
     .start();
 
 let _ = sys.run();
+```
+
+## Résultat
+
+Un serveur http qui écoute, mais ne répond que des 404
+
+```bash
+curl localhost:9080 -i
+HTTP/1.1 404 Not Found
+content-length: 0
+date: Thu, 19 Apr 2018 21:36:42 GMT
 ```
