@@ -599,9 +599,10 @@
 					<aside class="notes">assemblage de libs et de code pour faire un service avec une api web (http + graphql)</aside>
 				</section>
 				<section>
-					<h2>code</h2>
+					<h2>let's code</h2>
 					<pre><code data-trim data-noescape class="sh">
-						git clone https://github.com/davidB/labs_cooking_microservices_with_rust
+						git clone https://github.com/davidB/labs_cooking_microservices_with_rust rust-cook
+						cd rust-cook/reviews
 					</code></pre>
 				</section>
 				<section>
@@ -616,7 +617,7 @@
 					</ul>
 				</section>
 				<section>
-					<h2>Autres crates utiles</h2>
+					<h2>crates utilés</h2>
 					<ul>
 						<li>http, mime : types pour les requêtes HTTP</li>
 						<li>futures, hyper, rayon, may : asynchrone &amp; concurrence</li>
@@ -900,7 +901,7 @@
 						RUN cargo build --release
 						
 						# Size optimization &amp; rename to main
-						RUN strip target/x86_64-unknown-linux-musl/release/ratings -o target/x86_64-unknown-linux-musl/release/main
+						RUN strip target/x86_64-unknown-linux-musl/release/reviews -o target/x86_64-unknown-linux-musl/release/main
 						
 						# Start building the final image
 						FROM scratch
@@ -912,9 +913,9 @@
 				<section>
 					<h2>Docker</h2>
 					<pre><code data-trim data-noescape class="sh">
-						docker build -t ratings:v10 .
-						docker run -p 9080:9080 -e "RUST_LOG=info" --rm --name ratings ratings:v10
-						docker stop ratings
+						docker build -t reviews:v10 .
+						docker run -p 9080:9080 -e "RUST_LOG=info" --rm --name reviews reviews:v10
+						docker stop reviews
 					</code></pre>
 				</section>
 				<section>
@@ -1021,7 +1022,7 @@
 			<section>
 				<section data-state="flash" align="center">
 					<h1>Merci</h1>
-					<a href="https://davidb.github.io/labs_cooking_microservices_with_rust" target="_blank">https://davidb.github.io/labs_cooking_microservices_with_rust</a>
+					<a href="http://bit.ly/rust-cook" target="_blank">http://bit.ly/rust-cook</a>
 				</section>
 			</section>
 		</div>
