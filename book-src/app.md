@@ -3,7 +3,7 @@
 ## Démarrer une application et un système d'acteur
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 extern crate actix;
 extern crate actix_web;
 extern crate futures;
@@ -19,7 +19,7 @@ pub struct AppState {
 }
 ```
 
-```rust,no_run
+```rust,no_run,ignore
 let sys = actix::System::new("reviews");
 
 server::new(move || {

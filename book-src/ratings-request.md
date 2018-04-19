@@ -4,7 +4,7 @@ Dans `reviews.rs`
 
 ## Nouveaux imports
 
-```rust,no_run
+```rust,no_run,ignore
 use actix_web::client::ClientRequest;
 use actix_web::HttpMessage;
 ```
@@ -13,7 +13,7 @@ use actix_web::HttpMessage;
 
 ### Définir la structure du json
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug, Deserialize)]
 pub struct RatingsResponse {
     id: i32,
@@ -23,7 +23,7 @@ pub struct RatingsResponse {
 
 ### Appeler le service
 
-```rust,no_run
+```rust,no_run,ignore
 ClientRequest::get(&format!("{}/ratings/{}", ::CONFIG.ratings_url, product_id))
     .finish()
     .unwrap()
@@ -43,7 +43,7 @@ ClientRequest::get(&format!("{}/ratings/{}", ::CONFIG.ratings_url, product_id))
 
 ### Chainer la future
 
-```rust,no_run
+```rust,no_run,ignore
 ...
         .and_then(move |ratings| {
             ...
@@ -81,7 +81,7 @@ curl localhost:9080/reviews/0
 
 ### Appeler le service
 
-```rust,no_run
+```rust,no_run,ignore
 ClientRequest::post(&format!("{}/ratings/{}", ::CONFIG.ratings_url, product_id))
     .json(review.0)
     .unwrap()
@@ -96,7 +96,7 @@ ClientRequest::post(&format!("{}/ratings/{}", ::CONFIG.ratings_url, product_id))
 
 ### Chainer la future
 
-```rust,no_run
+```rust,no_run,ignore
 ...
         .and_then(move |_| {
             ...

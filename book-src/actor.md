@@ -3,7 +3,7 @@
 ## Définir l'acteur
 Dans `db.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use actix::prelude::*;
 
 pub struct DbExecutor();
@@ -15,7 +15,7 @@ impl Actor for DbExecutor {
 
 ### Définir le message `GetReviews`
 
-```rust,no_run
+```rust,no_run,ignore
 use models;
 
 #[derive(Debug)]
@@ -46,7 +46,7 @@ impl Handler<GetReviews> for DbExecutor {
 
 ### Définir le message `SaveReview`
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,
@@ -70,7 +70,7 @@ impl Handler<SaveReview> for DbExecutor {
 ## Ajouter l'acteur à l'`AppState`
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use actix::prelude::*;
 
 mod db;
@@ -80,7 +80,7 @@ pub struct AppState {
 }
 ```
 
-```rust,no_run
+```rust,no_run,ignore
 let db_addr = SyncArbiter::start(3, move || db::DbExecutor());
 
 server::new(move || {
@@ -92,13 +92,13 @@ server::new(move || {
 ## Appeller l'acteur pendant les requêtes
 Dans `reviews.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use db;
 ```
 
 ### Get des reviews
 
-```rust,no_run
+```rust,no_run,ignore
 state
     .db
     .send(db::GetReviews {
@@ -110,7 +110,7 @@ state
 
 ### Save d'une review
 
-```rust,no_run
+```rust,no_run,ignore
 state
     .db
     .send(db::SaveReview {

@@ -26,14 +26,6 @@ curl localhost:7878/ratings/0 -d '{"reviewer":"me","rating":3}'
 curl localhost:7878/ratings/0
 ```
 
-## Initialiser la base de données
-
-```
-cargo install diesel_cli
-cd reviews
-DATABASE_URL=db.sqlite diesel migration run
-```
-
 ## Lancer le service avec rebuild automatique
 
 ```

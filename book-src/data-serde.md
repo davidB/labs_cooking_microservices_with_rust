@@ -3,7 +3,7 @@
 ## Définir le modèle
 Dans `models.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Serialize, Debug)]
 pub struct Review {
     pub product_id: i32,
@@ -14,20 +14,20 @@ pub struct Review {
 
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 mod models;
 ```
 
 ## Traduire avec les entrées / sorties
 Dans `reviews.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use models;
 ```
 
 ### Définir la structure JSON de sortie
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug, Serialize)]
 pub struct Product {
     pub id: i32,
@@ -59,7 +59,7 @@ pub enum Color {
 
 ### Convertir le modèle en sortie
 
-```rust,no_run
+```rust,no_run,ignore
 pub fn rating_nb_to_rating(rating: &i32) -> Rating {
     Rating {
         stars: *rating,
@@ -91,7 +91,7 @@ pub fn reviews_with_ratings(
 
 ### Renvoyer la réponse
 
-```rust,no_run
+```rust,no_run,ignore
 let ratings = HashMap::new();
 futures::future::ok(Ok(vec![]))
     .and_then(move |mut reviews: Result<Vec<models::Review>, ()>| {
@@ -112,7 +112,7 @@ futures::future::ok(Ok(vec![]))
 
 ### Définir la structure JSON en entrée
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug, Deserialize, Serialize)]
 pub struct NewReview {
     reviewer: String,
@@ -123,7 +123,7 @@ pub struct NewReview {
 
 ### Convertir l'entrée en modèle
 
-```rust,no_run
+```rust,no_run,ignore
 let review_to_save = models::Review {
     product_id: product_id as i32,
     reviewer: review.reviewer.clone(),
@@ -134,7 +134,7 @@ let review_to_save = models::Review {
 
 ### Renvoyer la réponse
 
-```rust,no_run
+```rust,no_run,ignore
 futures::future::ok(Ok(NewReview {
     reviewer: review.reviewer.clone(),
     text: review.text.clone(),

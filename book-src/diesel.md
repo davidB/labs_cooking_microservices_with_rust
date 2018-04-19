@@ -3,7 +3,7 @@
 ## Nouvelles dépendances
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 #[macro_use]
 extern crate diesel;
 extern crate r2d2;
@@ -17,14 +17,14 @@ Dans `lib.rs`
 
 ...
 
-```rust,no_run
+```rust,no_run,ignore
 mod schema;
 ```
 
 ## Ajout d'attributs au model
 Dans `model.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use super::schema::reviews;
 
 #[derive(Serialize, Debug, Queryable, Insertable)]
@@ -39,7 +39,7 @@ pub struct Review {
 ## Configurer le pool de connection
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 let manager = ConnectionManager::<SqliteConnection>::new(CONFIG.database_url.clone());
 let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
 let db_addr = SyncArbiter::start(3, move || db::DbExecutor(pool.clone()));
@@ -49,7 +49,7 @@ let db_addr = SyncArbiter::start(3, move || db::DbExecutor(pool.clone()));
 
 ### Importer les nouvelles dépendances
 
-```rust,no_run
+```rust,no_run,ignore
 use diesel;
 use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, Pool};
@@ -59,13 +59,13 @@ use schema;
 
 ### Ajouter le pool de connection
 
-```rust,no_run
+```rust,no_run,ignore
 pub struct DbExecutor(pub Pool<ConnectionManager<SqliteConnection>>);
 ```
 
 ### Récupérer les reviews
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug)]
 pub struct GetReviews {
     pub product_id: i32,
@@ -94,7 +94,7 @@ impl Handler<GetReviews> for DbExecutor {
 
 ### Sauvegarder une review
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug)]
 pub struct SaveReview {
     pub review: models::Review,

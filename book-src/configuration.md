@@ -2,7 +2,7 @@
 
 ## module `config.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use std::env;
 
 #[derive(Debug)]
@@ -29,7 +29,7 @@ impl Config {
 ## Ecouter sur l'adresse de la configuration
 Dans `bin.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 mod config;
 ```
 
@@ -41,7 +41,7 @@ let addr = format!("{}:{}", config.host, config.port);
 ## Rendre la configuration accessible
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 #[macro_use]
 extern crate lazy_static;
 

@@ -13,7 +13,7 @@ use futures;
 
 ### Définir comment extraire le product_id du path
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Deserialize)]
 pub struct ProductId {
     product_id: i32,
@@ -22,7 +22,7 @@ pub struct ProductId {
 
 ### GET des reviews
 
-```rust,no_run
+```rust,no_run,ignore
 pub fn reviews(
     product_id: Path<ProductId>,
     state: State<super::AppState>,
@@ -34,7 +34,7 @@ pub fn reviews(
 
 ### POST d'une review
 
-```rust,no_run
+```rust,no_run,ignore
 #[derive(Debug, Deserialize, Serialize)]
 pub struct NewReview {}
 
@@ -52,13 +52,13 @@ pub fn create_review(
 ## Définir les routes
 Dans `lib.rs`
 
-```rust,no_run
+```rust,no_run,ignore
 use actix_web::http;
 
 mod reviews;
 ```
 
-```rust,no_run
+```rust,no_run,ignore
 server::new(move || {
     App::with_state(AppState {
     }).middleware(Logger::default())
