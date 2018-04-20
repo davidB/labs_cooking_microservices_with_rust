@@ -21,6 +21,8 @@ serde_derive = "1.0"
 
 diesel = { version = "1.2", features = ["sqlite", "r2d2"] }
 r2d2 = "0.8"
+# Needed for sqlite.
+libsqlite3-sys = { version = "*", features = ["bundled"] }
 
 lazy_static = "1.0"
 
